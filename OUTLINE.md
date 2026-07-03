@@ -1,4 +1,4 @@
-# GLAZE - Build Outline
+# Mount Helicon - Build Outline
 
 **Tagline:** "Your agents are productive. You're not."
 
@@ -12,9 +12,9 @@
 
 ## Research Foundation
 
-GLAZE is built on six cutting-edge techniques from 2025-2026 ML research. This isn't a chatbot with memory bolted on.
+Mount Helicon is built on six cutting-edge techniques from 2025-2026 ML research. This isn't a chatbot with memory bolted on.
 
-| Technique | Source | What GLAZE borrows |
+| Technique | Source | What Mount Helicon borrows |
 |-----------|--------|-------------------|
 | **MemCube** | MemOS (Shanghai Jiao Tong, 2025) | Versioned memory units with metadata: source, valid_from, last_reinforced, confidence, type. Every memory is a structured object, not raw text. |
 | **Three-axis audit** | Memory Bear (Dec 2025) | Audit on three dimensions: temporal (timelines consistent?), factual (contradictions?), logical (reasoning chains close?). Offline cron-style pass. |
@@ -25,7 +25,7 @@ GLAZE is built on six cutting-edge techniques from 2025-2026 ML research. This i
 
 **Key stat:** Production memory accuracy drops to 49% after 30 days at 38% staleness (Mem0 research, ECAI 2025). Without temporal modeling, memory rots.
 
-**SAGE Novelty Gate (May 2026):** von Mises-Fisher density estimator scores new facts as novel (ADD), redundant (NOOP), or uncertain (LLM merge). Cuts API cost 3.4x vs Mem0. GLAZE uses this to gate memory ingestion.
+**SAGE Novelty Gate (May 2026):** von Mises-Fisher density estimator scores new facts as novel (ADD), redundant (NOOP), or uncertain (LLM merge). Cuts API cost 3.4x vs Mem0. Mount Helicon uses this to gate memory ingestion.
 
 ---
 
@@ -40,7 +40,7 @@ GLAZE is built on six cutting-edge techniques from 2025-2026 ML research. This i
 | Agent review queue | Nobody | Langfuse/AgentOps observe. Nobody gates output. |
 | Cross-platform | Nobody | Claude/ChatGPT/Cursor all siloed |
 
-**GLAZE fills:** productized meta-memory audit + agent-agnostic review + cross-platform memory.
+**Mount Helicon fills:** productized meta-memory audit + agent-agnostic review + cross-platform memory.
 
 ---
 
@@ -128,11 +128,11 @@ Retrieval strategy improves: surface high-value patterns first
 
 **Feed** - Review cards sorted by learned urgency. GlazeCube snippet, source, age, spin count, confidence badge. Approve/revise/kill + voice input.
 
-**Glaze Score** - What % of agent output you actually reviewed. Killing counts. Ignoring doesn't. Trends over time. Breakdown by source/type.
+**Helicon Score** - What % of agent output you actually reviewed. Killing counts. Ignoring doesn't. Trends over time. Breakdown by source/type.
 
 **Memory Audit** - Layer 3 output. Pattern list with confidence scores, staleness flags, contradiction alerts, confabulation warnings, proposed prunes. You review the memory itself.
 
-**Patterns** - What GLAZE has learned: review velocity by type, shipping rates, decay curves, spin list. Each pattern shows data points, confidence, last reinforced date.
+**Patterns** - What Mount Helicon has learned: review velocity by type, shipping rates, decay curves, spin list. Each pattern shows data points, confidence, last reinforced date.
 
 ---
 
@@ -161,7 +161,7 @@ ANY AGENT PLATFORM                 CLOUD (Alibaba ECS)
 Claude Code JSONL ------+
 Obsidian vault ----------+
 Git repos ---------------+          +-------------------+
-ChatGPT export ----------+--sync--> | GLAZE Backend     |
+ChatGPT export ----------+--sync--> | Mount Helicon Backend     |
 Cursor memory banks -----+          | (Python/FastAPI)   |
 Mem0 API ----------------+          |                   |
 Any markdown/JSON -------+          | Qwen Cloud API:   |
@@ -246,19 +246,19 @@ V2: Native Swift macOS app replaces Web UI
 
 ## Demo Script (3 min)
 
-**0:00-0:15** Hook: "13 agents ran last week across Claude Code, Cursor, and ChatGPT. I reviewed 3 outputs. Shipped zero. Most memory systems would store that sentence. GLAZE knows it from watching my behavior."
+**0:00-0:15** Hook: "13 agents ran last week across Claude Code, Cursor, and ChatGPT. I reviewed 3 outputs. Shipped zero. Most memory systems would store that sentence. Mount Helicon knows it from watching my behavior."
 
 **0:15-0:45** Layer 1 - Extraction: Real GlazeCubes from 208 Claude Code transcripts and 103 memory files. A 57-day LinkedIn post (confidence: 0.0001, Weibull decay with κ=1.8 cliff). Two unreviewed resumes. A memory file that contradicts another. Novelty gate caught 14 redundant entries at ingestion.
 
-**0:45-1:15** Layer 2 - Review patterns: Voice review a card. GLAZE updates behavioral model. "You review code in 24h (confidence: 0.91, 47 data points). Content sits 14 days (confidence: 0.87). This post discussed in 6 sessions, file changed twice. Kill prediction: 91%."
+**0:45-1:15** Layer 2 - Review patterns: Voice review a card. Mount Helicon updates behavioral model. "You review code in 24h (confidence: 0.91, 47 data points). Content sits 14 days (confidence: 0.87). This post discussed in 6 sessions, file changed twice. Kill prediction: 91%."
 
 **1:15-1:45** Layer 2 - Spin detection: "7 planning documents for content publishing. Zero posts published. Spin score: critical."
 
 **1:45-2:30** Layer 3 - Meta-audit: Three-axis results. Temporal: "status file from May 29 references 'this week' actions that are 27 days old." Factual: "project_portfolio.md says V3, project_paris_portfolio.md says Fable version. Which is current?" Logical: "feedback_stop_being_cautious.md and feedback_test_before_prompt.md may conflict." Confidence decay shown. Human confirms prune. SSGM gate validates. Memory sharpens.
 
-**2:30-2:45** Glaze Score: 12 → 38 after reviewing 8 items. "Killing counts. Ignoring doesn't."
+**2:30-2:45** Helicon Score: 12 → 38 after reviewing 8 items. "Killing counts. Ignoring doesn't."
 
-**2:45-3:00** Close: "Mem0 stores. Letta organizes. Zep timestamps. GLAZE audits. Most memory agents remember what you said. GLAZE remembers what you did, checks its own work, and works with any agent platform."
+**2:45-3:00** Close: "Mem0 stores. Letta organizes. Zep timestamps. Mount Helicon audits. Most memory agents remember what you said. Mount Helicon remembers what you did, checks its own work, and works with any agent platform."
 
 ---
 
@@ -266,7 +266,7 @@ V2: Native Swift macOS app replaces Web UI
 
 Most submissions: chatbot that remembers your name. One layer of memory. One platform.
 
-GLAZE has three layers and works with any agent:
+Mount Helicon has three layers and works with any agent:
 1. **Extraction** - pluggable connectors, SAGE novelty gate (most stop here)
 2. **Review patterns** - behavioral memory with Weibull decay (not conversational)
 3. **Meta-audit** - three-axis audit, SSGM gates, anti-confabulation (nobody else does this)

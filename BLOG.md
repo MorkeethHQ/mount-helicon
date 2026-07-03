@@ -1,4 +1,4 @@
-# GLAZE: An Agent-Agnostic Memory Audit System
+# Mount Helicon: An Agent-Agnostic Memory Audit System
 
 *Oscar, June 2026*
 
@@ -8,7 +8,7 @@ I have 103 memory files spread across Claude Code, ChatGPT, and Cursor. I review
 
 This is normal. Memory systems store everything, audit nothing.
 
-GLAZE is a three-layer system that reads memory from any AI tool, audits it for staleness and contradictions, learns your review patterns, and checks its own stored conclusions. I built it in two weeks for the Qwen Cloud MemoryAgent track, using 1,268 real memory units extracted from 208 Claude Code transcripts, 150+ Obsidian files, and several other sources. Zero fake data.
+Mount Helicon is a three-layer system that reads memory from any AI tool, audits it for staleness and contradictions, learns your review patterns, and checks its own stored conclusions. I built it in two weeks for the Qwen Cloud MemoryAgent track, using 1,268 real memory units extracted from 208 Claude Code transcripts, 150+ Obsidian files, and several other sources. Zero fake data.
 
 ## The Problem: Memory Rots
 
@@ -18,9 +18,9 @@ Every memory system I looked at focuses on the same thing: store more, retrieve 
 
 ## Research Foundation
 
-I read a lot of papers before writing code. GLAZE borrows from six specific techniques:
+I read a lot of papers before writing code. Mount Helicon borrows from six specific techniques:
 
-**MemOS (Shanghai Jiao Tong, 2025)** introduced MemCubes -- versioned memory units with structured metadata. GLAZE's GlazeCube is directly inspired by this: every memory item is an object with source, timestamp, type, content hash, confidence score, and validity window. Not raw text.
+**MemOS (Shanghai Jiao Tong, 2025)** introduced MemCubes -- versioned memory units with structured metadata. Mount Helicon's GlazeCube is directly inspired by this: every memory item is an object with source, timestamp, type, content hash, confidence score, and validity window. Not raw text.
 
 ```python
 @dataclass
@@ -37,7 +37,7 @@ class GlazeCube:
     # ... 10 more fields
 ```
 
-**Memory Bear (Dec 2025)** defined three-axis audit: temporal consistency (are timelines still valid?), factual consistency (do memories contradict?), and logical consistency (do reasoning chains hold?). GLAZE runs all three as an offline audit pass.
+**Memory Bear (Dec 2025)** defined three-axis audit: temporal consistency (are timelines still valid?), factual consistency (do memories contradict?), and logical consistency (do reasoning chains hold?). Mount Helicon runs all three as an offline audit pass.
 
 **SSGM Framework (Mar 2026) and LiCoMemory (Huang 2025)** gave me the forgetting model. Ebbinghaus decay treats all memory types equally. The Weibull distribution does not:
 
@@ -58,19 +58,19 @@ This matters. A draft post (kappa=1.8, eta=10) decays to 0.0000 after 42 days. A
 
 **MetaMem (ACL 2026, OpenBMB)** showed that you can learn retrieval strategy from usage patterns, not just store and rank.
 
-**Honest Lying (May 2026)** documented how reflective agents confabulate false beliefs that self-reinforce. The fix: adversarial audit that challenges stored conclusions against fresh evidence. This became GLAZE's meta-audit layer.
+**Honest Lying (May 2026)** documented how reflective agents confabulate false beliefs that self-reinforce. The fix: adversarial audit that challenges stored conclusions against fresh evidence. This became Mount Helicon's meta-audit layer.
 
 Two more systems shaped specific components. **Hermes Agent (Nous Research, Feb 2026)** used three-layer memory with FTS5 and a closed learning loop, which validated the SQLite approach. **Brian Armstrong's notes (Jun 2026)** on Coinbase's AI infrastructure -- response caching, model routing, cost visibility -- informed the token management layer.
 
 ## Architecture
 
-GLAZE has three layers:
+Mount Helicon has three layers:
 
 **Layer 1 (Extraction):** Five connectors read from Claude Code JSONL transcripts, Claude Code memory files, Obsidian vaults, git repositories, ChatGPT exports, and Cursor memory banks. Each connector produces `ConnectorResult` objects, which the scanner converts to GlazeCubes with content hashing and optional Qwen enrichment (summarization + SAGE novelty gate).
 
 **Layer 2 (Review Pattern Learning):** Learns from behavior, not instructions. The system tracks review velocity by type, shipping rates (what gets approved vs. killed), spin detection (same topic discussed across 4+ sessions without file changes), and kill prediction. Every review decision feeds back into the model.
 
-**Layer 3 (Meta-Audit):** The differentiator. GLAZE audits its own stored patterns. The temporal axis finds memory items with time-relative language ("this week", "tomorrow") that are days or weeks old. The factual axis uses Qwen to detect contradictions between overlapping memories. The decay axis flags items below confidence thresholds. The logical axis challenges patterns with few data points. The human reviews the audit findings, and those audit decisions become data for the next audit cycle. The meta-loop closes.
+**Layer 3 (Meta-Audit):** The differentiator. Mount Helicon audits its own stored patterns. The temporal axis finds memory items with time-relative language ("this week", "tomorrow") that are days or weeks old. The factual axis uses Qwen to detect contradictions between overlapping memories. The decay axis flags items below confidence thresholds. The logical axis challenges patterns with few data points. The human reviews the audit findings, and those audit decisions become data for the next audit cycle. The meta-loop closes.
 
 The data layer is 10 SQLite tables plus an FTS5 virtual table:
 
@@ -145,7 +145,7 @@ Memory consolidation runs as a "sleep" cycle, borrowing the neuroscience metapho
 
 ## MCP Server
 
-GLAZE exposes 8 tools via an MCP server (JSON-RPC 2.0 over stdio) so AI agents can audit their own memory:
+Mount Helicon exposes 8 tools via an MCP server (JSON-RPC 2.0 over stdio) so AI agents can audit their own memory:
 
 - `glaze_health` -- overall memory health score, cube counts, decay stats by type
 - `glaze_stale` -- find items below a confidence threshold
@@ -154,7 +154,7 @@ GLAZE exposes 8 tools via an MCP server (JSON-RPC 2.0 over stdio) so AI agents c
 - `glaze_recent_reviews` -- the human's latest review decisions
 - `glaze_patterns` -- learned behavioral patterns with confidence scores
 - `glaze_context` -- proactive memory injection: describe your task, get ranked memories
-- `glaze_triage` -- trigger auto-triage: GLAZE applies learned rules autonomously
+- `glaze_triage` -- trigger auto-triage: Mount Helicon applies learned rules autonomously
 
 Two new tools in v2: `glaze_context` (proactive memory injection for agents starting a task) and `glaze_triage` (agents can trigger auto-triage directly). This means an agent like Claude Code can check whether something it is about to store already exists, whether its own previous outputs are still considered valid, what the human tends to approve or kill, and load the most relevant memories for its current task. The agent becomes a participant in the audit loop, not just a subject of it.
 
@@ -170,7 +170,7 @@ Two new tools in v2: `glaze_context` (proactive memory injection for agents star
 
 **Days 13-14:** Weibull decay (replacing simple Ebbinghaus). Multi-model routing with cost tracking. Response cache with SHA-256 prompt hashing. Token dashboard with per-model and per-operation breakdowns.
 
-**Day 15:** Auto-triage engine. This is the feature that turns GLAZE from a tool into an agent. After enough human reviews, GLAZE derives triage rules: if 79% of `code` items historically get killed and this one has <10% confidence, auto-kill it. The human only reviews uncertain items. On first run, auto-triage handled 585 out of 1,268 cubes autonomously, pushing the Glaze Score from 7% to 53.5% without a single human decision.
+**Day 15:** Auto-triage engine. This is the feature that turns Mount Helicon from a tool into an agent. After enough human reviews, Mount Helicon derives triage rules: if 79% of `code` items historically get killed and this one has <10% confidence, auto-kill it. The human only reviews uncertain items. On first run, auto-triage handled 585 out of 1,268 cubes autonomously, pushing the Helicon Score from 7% to 53.5% without a single human decision.
 
 ```python
 def run_auto_triage(conn, dry_run=False):
@@ -186,7 +186,7 @@ def run_auto_triage(conn, dry_run=False):
             conn.execute("UPDATE glaze_cubes SET review_status = 'killed'", ...)
 ```
 
-Also added proactive MCP context injection: `glaze_context` lets agents describe their current task and receive ranked memories by relevance, plus active patterns and open contradictions. The agent does not search; GLAZE decides what is relevant and delivers it.
+Also added proactive MCP context injection: `glaze_context` lets agents describe their current task and receive ranked memories by relevance, plus active patterns and open contradictions. The agent does not search; Mount Helicon decides what is relevant and delivers it.
 
 **Day 16:** CLI for plug-and-play setup. Three commands from zero to auditing:
 
@@ -197,9 +197,9 @@ glaze scan       # extracts memory into GlazeCubes
 glaze serve      # starts the review UI
 ```
 
-Also added `glaze stack` (audits your AI tool setup: session count, memory files, vault size, stack completeness %), `glaze triage` (run auto-triage from the terminal), `glaze score` (see your Glaze Score with decay-by-type breakdown), and `glaze optimize` (Qwen-powered analysis of your memory patterns with specific recommendations). The init command walks the filesystem, finds `~/.claude`, `~/.cursor`, Obsidian vaults on iCloud, and git directories, then writes a ready-to-use `config.json`. No manual path editing.
+Also added `glaze stack` (audits your AI tool setup: session count, memory files, vault size, stack completeness %), `glaze triage` (run auto-triage from the terminal), `glaze score` (see your Helicon Score with decay-by-type breakdown), and `glaze optimize` (Qwen-powered analysis of your memory patterns with specific recommendations). The init command walks the filesystem, finds `~/.claude`, `~/.cursor`, Obsidian vaults on iCloud, and git directories, then writes a ready-to-use `config.json`. No manual path editing.
 
-**Day 17:** Project Intelligence layer. The demo killer. GLAZE now groups cubes by project tag, computes per-project metrics (ship rate, spin score, decay velocity, days since last output), and ranks projects by what needs attention.
+**Day 17:** Project Intelligence layer. The demo killer. Mount Helicon now groups cubes by project tag, computes per-project metrics (ship rate, spin score, decay velocity, days since last output), and ranks projects by what needs attention.
 
 The Focus tab opens first. Top banner: "You touched 11 projects this week. You shipped from 6." Below that, project cards ranked by urgency. Each card shows:
 
@@ -208,19 +208,19 @@ The Focus tab opens first. Top banner: "You touched 11 projects this week. You s
 - **Days since output** = last commit or approved cube. Over 14d = stale.
 - **Urgency score** = weighted combination of spin + staleness + review backlog + decay + shipping momentum.
 
-GLAZE picks one-line actions per project: "Stop planning, start shipping. 4 sessions per shipped item." or "Stale 62d. Either push a commit or archive." With Qwen enabled, it generates personalized recommendations from the actual data.
+Mount Helicon picks one-line actions per project: "Stop planning, start shipping. 4 sessions per shipped item." or "Stale 62d. Either push a commit or archive." With Qwen enabled, it generates personalized recommendations from the actual data.
 
 This is the feature that makes the demo undeniable. Not "here's a tool that tracks memory" but "here's a system that tells you what to do next, based on what you actually did."
 
-**Day 18:** Decay-based triage. The auto-triage engine previously only learned from review history (behavioral rules). Types with few reviews had no rules. Now GLAZE also generates decay-based rules: if the Weibull model says confidence is below 5% and multiple items of that type are in the same state, auto-kill them. The Weibull curve itself is the evidence, not the review history. This added 3 new rules (draft, file_created, idea) and triaged 92 more items, pushing the score from 53.6% to 60.9%. Total auto-triage: 677 items handled without human input.
+**Day 18:** Decay-based triage. The auto-triage engine previously only learned from review history (behavioral rules). Types with few reviews had no rules. Now Mount Helicon also generates decay-based rules: if the Weibull model says confidence is below 5% and multiple items of that type are in the same state, auto-kill them. The Weibull curve itself is the evidence, not the review history. This added 3 new rules (draft, file_created, idea) and triaged 92 more items, pushing the score from 53.6% to 60.9%. Total auto-triage: 677 items handled without human input.
 
 Also: full system audit, README rewrite (was showing 28 endpoints when there are 42), config.example.json for Docker builds, Dockerfile port fix. The codebase is now 11,313 lines across Python and TypeScript.
 
-**Day 19:** Task playbooks and context impact tracking. Two new modules that close the loop between "what GLAZE surfaces" and "did it help."
+**Day 19:** Task playbooks and context impact tracking. Two new modules that close the loop between "what Mount Helicon surfaces" and "did it help."
 
 Task playbooks mine the review history into 6 categories (build, content, design, audit, context, career). Each playbook contains: rules extracted from feedback memory cubes, review stats (ship rate, kill rate), and a ready-to-use prompt template. The `glaze_playbook` MCP tool matches any task description to the best playbook, so an agent starting a "write a tweet" task automatically gets content voice rules and timing constraints. 6 playbooks, all populated from real data.
 
-Context impact tracking connects retrieval to outcomes. When `glaze_context` surfaces memories, GLAZE logs what was shown. When a review happens, it marks which surfaced memories were "acted on." Over time, this builds a usefulness score per memory: how often was it surfaced, how often did the human act on it? Memories that get surfaced 10 times but never acted on are noise. This is the "did having this memory make the output better?" question, answered with data.
+Context impact tracking connects retrieval to outcomes. When `glaze_context` surfaces memories, Mount Helicon logs what was shown. When a review happens, it marks which surfaced memories were "acted on." Over time, this builds a usefulness score per memory: how often was it surfaced, how often did the human act on it? Memories that get surfaced 10 times but never acted on are noise. This is the "did having this memory make the output better?" question, answered with data.
 
 Matching logic uses word-level tag overlap (not substring) to avoid false positives. 51 API endpoints, 14 routers, 9 MCP tools, 9 CLI commands.
 
@@ -228,9 +228,9 @@ Matching logic uses word-level tag overlap (not substring) to avoid false positi
 
 **Q-value utility learning** (from MemRL, arxiv 2601.03192). Every memory gets a utility score that updates with each retrieval cycle: `Q_new = Q_old + alpha * (reward - Q_old)`. When a memory is surfaced via `glaze_context` and the human later approves it, reward=1.0. If killed, reward=0.0. The Q-value feeds back into retrieval ranking via `score = (1-lambda)*relevance + lambda*Q`. Memories that consistently help rise. Memories that keep getting surfaced but ignored sink. This is the self-improving loop the MemoryAgent track is looking for.
 
-**Entity-boosted retrieval** (from Mem0's hybrid search). GLAZE already had 65 entities and 546 edges in its knowledge graph, but they weren't wired into retrieval. Now: when a task mentions an entity (e.g., "relay"), the system finds all cubes linked to that entity in the graph and boosts their retrieval score. Three signals combined: FTS relevance + Q-value utility + entity graph boost.
+**Entity-boosted retrieval** (from Mem0's hybrid search). Mount Helicon already had 65 entities and 546 edges in its knowledge graph, but they weren't wired into retrieval. Now: when a task mentions an entity (e.g., "relay"), the system finds all cubes linked to that entity in the graph and boosts their retrieval score. Three signals combined: FTS relevance + Q-value utility + entity graph boost.
 
-**Core Memory Compiler** (from Letta's `Memory.compile()` and LangMem's prompt optimization). GLAZE compiles its learned patterns into injectable files: `core-memory.md` (top 20 highest-utility approved memories), 6 skill files (one per task category with feedback rules), and a `claude-md-patch.md` (suggested CLAUDE.md additions). These are files agents can load without calling any MCP tool. The compiler runs via `glaze compile` CLI or `glaze_compile` MCP tool. 8 files, 7KB total, from 1,268 cubes and 772 reviews.
+**Core Memory Compiler** (from Letta's `Memory.compile()` and LangMem's prompt optimization). Mount Helicon compiles its learned patterns into injectable files: `core-memory.md` (top 20 highest-utility approved memories), 6 skill files (one per task category with feedback rules), and a `claude-md-patch.md` (suggested CLAUDE.md additions). These are files agents can load without calling any MCP tool. The compiler runs via `glaze compile` CLI or `glaze_compile` MCP tool. 8 files, 7KB total, from 1,268 cubes and 772 reviews.
 
 57 API endpoints, 14 routers, 11 MCP tools, 11 CLI commands.
 
@@ -258,14 +258,14 @@ This is the biggest retrieval quality jump so far. FTS5 keyword-only was ~25% P@
 
 12 MCP tools, 12 CLI commands, 5 connectors, eval composite 76.8%.
 
-## What Makes GLAZE Different
+## What Makes Mount Helicon Different
 
-Most memory systems sit at Layer 1: store and retrieve. Some reach Layer 2: organize and index. GLAZE's contribution is Layer 3: audit what you have stored, check it against fresh evidence, and learn from the human's review behavior to do it better next time. And now Layer 4: make its own decisions about what to keep and what to kill, based on what it learned from the human.
+Most memory systems sit at Layer 1: store and retrieve. Some reach Layer 2: organize and index. Mount Helicon's contribution is Layer 3: audit what you have stored, check it against fresh evidence, and learn from the human's review behavior to do it better next time. And now Layer 4: make its own decisions about what to keep and what to kill, based on what it learned from the human.
 
 The cross-platform extraction is not a feature for its own sake. It is what makes the audit meaningful. When you can see a Claude Code memory file that says "project is active" alongside a git history showing no commits in 40 days, the contradiction becomes visible. Siloed memory cannot surface that.
 
-The meta-loop is the core idea. GLAZE stores patterns about how the human reviews. Then it audits those patterns. Then the human reviews the audit. Then GLAZE uses those patterns to auto-triage obvious cases. Each pass sharpens the model. The human reviews less, not more. The goal is a Glaze Score going up while review time goes down.
+The meta-loop is the core idea. Mount Helicon stores patterns about how the human reviews. Then it audits those patterns. Then the human reviews the audit. Then Mount Helicon uses those patterns to auto-triage obvious cases. Each pass sharpens the model. The human reviews less, not more. The goal is a Helicon Score going up while review time goes down.
 
 ---
 
-*GLAZE is open source and built for the Qwen Cloud Global AI Hackathon, MemoryAgent track. Stack: Python, FastAPI, SQLite + FTS5, React/Vite, Qwen Cloud API (turbo/plus/max), MCP (JSON-RPC 2.0). Repository: [github.com/MorkeethHQ/glaze](https://github.com/MorkeethHQ/glaze)*
+*Mount Helicon is open source and built for the Qwen Cloud Global AI Hackathon, MemoryAgent track. Stack: Python, FastAPI, SQLite + FTS5, React/Vite, Qwen Cloud API (turbo/plus/max), MCP (JSON-RPC 2.0). Repository: [github.com/MorkeethHQ/glaze](https://github.com/MorkeethHQ/glaze)*

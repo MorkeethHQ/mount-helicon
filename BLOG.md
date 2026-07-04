@@ -20,11 +20,11 @@ Every memory system I looked at focuses on the same thing: store more, retrieve 
 
 I read a lot of papers before writing code. Mount Helicon borrows from six specific techniques:
 
-**MemOS (Shanghai Jiao Tong, 2025)** introduced MemCubes -- versioned memory units with structured metadata. Mount Helicon's GlazeCube is directly inspired by this: every memory item is an object with source, timestamp, type, content hash, confidence score, and validity window. Not raw text.
+**MemOS (Shanghai Jiao Tong, 2025)** introduced MemCubes -- versioned memory units with structured metadata. Mount Helicon's HeliconCube is directly inspired by this: every memory item is an object with source, timestamp, type, content hash, confidence score, and validity window. Not raw text.
 
 ```python
 @dataclass
-class GlazeCube:
+class HeliconCube:
     id: str
     source: str          # "claude-code", "obsidian", "git", "chatgpt", "cursor"
     source_ref: str      # original session or file reference
@@ -66,7 +66,7 @@ Two more systems shaped specific components. **Hermes Agent (Nous Research, Feb 
 
 Mount Helicon has three layers:
 
-**Layer 1 (Extraction):** Five connectors read from Claude Code JSONL transcripts, Claude Code memory files, Obsidian vaults, git repositories, ChatGPT exports, and Cursor memory banks. Each connector produces `ConnectorResult` objects, which the scanner converts to GlazeCubes with content hashing and optional Qwen enrichment (summarization + SAGE novelty gate).
+**Layer 1 (Extraction):** Five connectors read from Claude Code JSONL transcripts, Claude Code memory files, Obsidian vaults, git repositories, ChatGPT exports, and Cursor memory banks. Each connector produces `ConnectorResult` objects, which the scanner converts to HeliconCubes with content hashing and optional Qwen enrichment (summarization + SAGE novelty gate).
 
 **Layer 2 (Review Pattern Learning):** Learns from behavior, not instructions. The system tracks review velocity by type, shipping rates (what gets approved vs. killed), spin detection (same topic discussed across 4+ sessions without file changes), and kill prediction. Every review decision feeds back into the model.
 
@@ -74,7 +74,7 @@ Mount Helicon has three layers:
 
 The data layer is 10 SQLite tables plus an FTS5 virtual table:
 
-- `glaze_cubes` -- versioned memory units (1,268 rows from real data)
+- `helicon_cubes` -- versioned memory units (1,268 rows from real data)
 - `reviews` -- human review decisions with timing metadata
 - `patterns` -- learned behavioral patterns with confidence and evidence
 - `audit_log` -- three-axis audit findings with severity and proposed actions
@@ -130,7 +130,7 @@ def _cache_key(system: str, user: str, model: str) -> str:
 
 Cache entries are persisted in the `qwen_cache` SQLite table with token counts and timestamps. On a re-scan, previously enriched cubes hit the cache instead of making API calls. The dashboard shows hit/miss rates and estimated tokens saved.
 
-**Real data only.** The demo runs on 1,268 GlazeCubes extracted from my actual Claude Code transcripts (208+ sessions), Obsidian vault (150+ files), and git repositories. The audit findings are real: 57-day-old drafts with 0.0001 confidence, memory files that contradict each other, patterns with 3 data points claiming high confidence. Zero synthetic data, zero seed scripts for fake content.
+**Real data only.** The demo runs on 1,268 HeliconCubes extracted from my actual Claude Code transcripts (208+ sessions), Obsidian vault (150+ files), and git repositories. The audit findings are real: 57-day-old drafts with 0.0001 confidence, memory files that contradict each other, patterns with 3 data points claiming high confidence. Zero synthetic data, zero seed scripts for fake content.
 
 ## Knowledge Graph and Memory Consolidation
 
@@ -147,20 +147,20 @@ Memory consolidation runs as a "sleep" cycle, borrowing the neuroscience metapho
 
 Mount Helicon exposes 8 tools via an MCP server (JSON-RPC 2.0 over stdio) so AI agents can audit their own memory:
 
-- `glaze_health` -- overall memory health score, cube counts, decay stats by type
-- `glaze_stale` -- find items below a confidence threshold
-- `glaze_search` -- FTS5 full-text search across all cubes
-- `glaze_contradictions` -- pending contradiction findings from the factual audit
-- `glaze_recent_reviews` -- the human's latest review decisions
-- `glaze_patterns` -- learned behavioral patterns with confidence scores
-- `glaze_context` -- proactive memory injection: describe your task, get ranked memories
-- `glaze_triage` -- trigger auto-triage: Mount Helicon applies learned rules autonomously
+- `helicon_health` -- overall memory health score, cube counts, decay stats by type
+- `helicon_stale` -- find items below a confidence threshold
+- `helicon_search` -- FTS5 full-text search across all cubes
+- `helicon_contradictions` -- pending contradiction findings from the factual audit
+- `helicon_recent_reviews` -- the human's latest review decisions
+- `helicon_patterns` -- learned behavioral patterns with confidence scores
+- `helicon_context` -- proactive memory injection: describe your task, get ranked memories
+- `helicon_triage` -- trigger auto-triage: Mount Helicon applies learned rules autonomously
 
-Two new tools in v2: `glaze_context` (proactive memory injection for agents starting a task) and `glaze_triage` (agents can trigger auto-triage directly). This means an agent like Claude Code can check whether something it is about to store already exists, whether its own previous outputs are still considered valid, what the human tends to approve or kill, and load the most relevant memories for its current task. The agent becomes a participant in the audit loop, not just a subject of it.
+Two new tools in v2: `helicon_context` (proactive memory injection for agents starting a task) and `helicon_triage` (agents can trigger auto-triage directly). This means an agent like Claude Code can check whether something it is about to store already exists, whether its own previous outputs are still considered valid, what the human tends to approve or kill, and load the most relevant memories for its current task. The agent becomes a participant in the audit loop, not just a subject of it.
 
 ## Build Timeline
 
-**Days 1-2:** Built 5 connectors (Claude Code JSONL + memory files, Obsidian, Git, ChatGPT, Cursor). Scanned real data. Got 1,268 GlazeCubes into the database.
+**Days 1-2:** Built 5 connectors (Claude Code JSONL + memory files, Obsidian, Git, ChatGPT, Cursor). Scanned real data. Got 1,268 HeliconCubes into the database.
 
 **Days 3-4:** Qwen Cloud integration via DashScope OpenAI-compatible API. Forgetting engine with Weibull decay. Audit engine with four axes. 82 audit findings on first run.
 
@@ -179,25 +179,25 @@ def run_auto_triage(conn, dry_run=False):
         if rule["rule_confidence"] < 0.5:
             continue
         rows = conn.execute(
-            "SELECT id FROM glaze_cubes WHERE type = ? AND confidence < ? AND review_status = 'pending'",
+            "SELECT id FROM helicon_cubes WHERE type = ? AND confidence < ? AND review_status = 'pending'",
             (rule["cube_type"], rule["confidence_threshold"])
         ).fetchall()
         for row in rows:
-            conn.execute("UPDATE glaze_cubes SET review_status = 'killed'", ...)
+            conn.execute("UPDATE helicon_cubes SET review_status = 'killed'", ...)
 ```
 
-Also added proactive MCP context injection: `glaze_context` lets agents describe their current task and receive ranked memories by relevance, plus active patterns and open contradictions. The agent does not search; Mount Helicon decides what is relevant and delivers it.
+Also added proactive MCP context injection: `helicon_context` lets agents describe their current task and receive ranked memories by relevance, plus active patterns and open contradictions. The agent does not search; Mount Helicon decides what is relevant and delivers it.
 
 **Day 16:** CLI for plug-and-play setup. Three commands from zero to auditing:
 
 ```bash
-pip install glaze-audit
-glaze init       # auto-detects Claude Code, Cursor, Obsidian, git repos
-glaze scan       # extracts memory into GlazeCubes
-glaze serve      # starts the review UI
+pip install helicon-audit
+helicon init       # auto-detects Claude Code, Cursor, Obsidian, git repos
+helicon scan       # extracts memory into HeliconCubes
+helicon serve      # starts the review UI
 ```
 
-Also added `glaze stack` (audits your AI tool setup: session count, memory files, vault size, stack completeness %), `glaze triage` (run auto-triage from the terminal), `glaze score` (see your Helicon Score with decay-by-type breakdown), and `glaze optimize` (Qwen-powered analysis of your memory patterns with specific recommendations). The init command walks the filesystem, finds `~/.claude`, `~/.cursor`, Obsidian vaults on iCloud, and git directories, then writes a ready-to-use `config.json`. No manual path editing.
+Also added `helicon stack` (audits your AI tool setup: session count, memory files, vault size, stack completeness %), `helicon triage` (run auto-triage from the terminal), `helicon score` (see your Helicon Score with decay-by-type breakdown), and `helicon optimize` (Qwen-powered analysis of your memory patterns with specific recommendations). The init command walks the filesystem, finds `~/.claude`, `~/.cursor`, Obsidian vaults on iCloud, and git directories, then writes a ready-to-use `config.json`. No manual path editing.
 
 **Day 17:** Project Intelligence layer. The demo killer. Mount Helicon now groups cubes by project tag, computes per-project metrics (ship rate, spin score, decay velocity, days since last output), and ranks projects by what needs attention.
 
@@ -218,19 +218,19 @@ Also: full system audit, README rewrite (was showing 28 endpoints when there are
 
 **Day 19:** Task playbooks and context impact tracking. Two new modules that close the loop between "what Mount Helicon surfaces" and "did it help."
 
-Task playbooks mine the review history into 6 categories (build, content, design, audit, context, career). Each playbook contains: rules extracted from feedback memory cubes, review stats (ship rate, kill rate), and a ready-to-use prompt template. The `glaze_playbook` MCP tool matches any task description to the best playbook, so an agent starting a "write a tweet" task automatically gets content voice rules and timing constraints. 6 playbooks, all populated from real data.
+Task playbooks mine the review history into 6 categories (build, content, design, audit, context, career). Each playbook contains: rules extracted from feedback memory cubes, review stats (ship rate, kill rate), and a ready-to-use prompt template. The `helicon_playbook` MCP tool matches any task description to the best playbook, so an agent starting a "write a tweet" task automatically gets content voice rules and timing constraints. 6 playbooks, all populated from real data.
 
-Context impact tracking connects retrieval to outcomes. When `glaze_context` surfaces memories, Mount Helicon logs what was shown. When a review happens, it marks which surfaced memories were "acted on." Over time, this builds a usefulness score per memory: how often was it surfaced, how often did the human act on it? Memories that get surfaced 10 times but never acted on are noise. This is the "did having this memory make the output better?" question, answered with data.
+Context impact tracking connects retrieval to outcomes. When `helicon_context` surfaces memories, Mount Helicon logs what was shown. When a review happens, it marks which surfaced memories were "acted on." Over time, this builds a usefulness score per memory: how often was it surfaced, how often did the human act on it? Memories that get surfaced 10 times but never acted on are noise. This is the "did having this memory make the output better?" question, answered with data.
 
 Matching logic uses word-level tag overlap (not substring) to avoid false positives. 51 API endpoints, 14 routers, 9 MCP tools, 9 CLI commands.
 
 **Day 20:** Three research-backed features from studying Mem0, Letta, LangMem, Zep, and MemRL architectures.
 
-**Q-value utility learning** (from MemRL, arxiv 2601.03192). Every memory gets a utility score that updates with each retrieval cycle: `Q_new = Q_old + alpha * (reward - Q_old)`. When a memory is surfaced via `glaze_context` and the human later approves it, reward=1.0. If killed, reward=0.0. The Q-value feeds back into retrieval ranking via `score = (1-lambda)*relevance + lambda*Q`. Memories that consistently help rise. Memories that keep getting surfaced but ignored sink. This is the self-improving loop the MemoryAgent track is looking for.
+**Q-value utility learning** (from MemRL, arxiv 2601.03192). Every memory gets a utility score that updates with each retrieval cycle: `Q_new = Q_old + alpha * (reward - Q_old)`. When a memory is surfaced via `helicon_context` and the human later approves it, reward=1.0. If killed, reward=0.0. The Q-value feeds back into retrieval ranking via `score = (1-lambda)*relevance + lambda*Q`. Memories that consistently help rise. Memories that keep getting surfaced but ignored sink. This is the self-improving loop the MemoryAgent track is looking for.
 
 **Entity-boosted retrieval** (from Mem0's hybrid search). Mount Helicon already had 65 entities and 546 edges in its knowledge graph, but they weren't wired into retrieval. Now: when a task mentions an entity (e.g., "relay"), the system finds all cubes linked to that entity in the graph and boosts their retrieval score. Three signals combined: FTS relevance + Q-value utility + entity graph boost.
 
-**Core Memory Compiler** (from Letta's `Memory.compile()` and LangMem's prompt optimization). Mount Helicon compiles its learned patterns into injectable files: `core-memory.md` (top 20 highest-utility approved memories), 6 skill files (one per task category with feedback rules), and a `claude-md-patch.md` (suggested CLAUDE.md additions). These are files agents can load without calling any MCP tool. The compiler runs via `glaze compile` CLI or `glaze_compile` MCP tool. 8 files, 7KB total, from 1,268 cubes and 772 reviews.
+**Core Memory Compiler** (from Letta's `Memory.compile()` and LangMem's prompt optimization). Mount Helicon compiles its learned patterns into injectable files: `core-memory.md` (top 20 highest-utility approved memories), 6 skill files (one per task category with feedback rules), and a `claude-md-patch.md` (suggested CLAUDE.md additions). These are files agents can load without calling any MCP tool. The compiler runs via `helicon compile` CLI or `helicon_compile` MCP tool. 8 files, 7KB total, from 1,268 cubes and 772 reviews.
 
 57 API endpoints, 14 routers, 11 MCP tools, 11 CLI commands.
 
@@ -238,7 +238,7 @@ Matching logic uses word-level tag overlap (not substring) to avoid false positi
 
 Rewrote the embedding layer to use numpy vector search instead of sqlite-vec (which doesn't work on macOS Python 3.12 -- `enable_load_extension` is not compiled in). Embeddings stored as BLOBs in a regular SQLite table. Cosine similarity computed in Python with numpy matrix multiplication. No external vector DB, no native extensions.
 
-1,268 cubes embedded in 19 seconds with all-MiniLM-L6-v2 (384 dims, 80MB model). 100% coverage. Hybrid search combines semantic similarity (60% weight) and FTS5 keyword match (40% weight). "Content strategy twitter" returns the exact content strategy files at 0.745 hybrid score. The MCP retrieval pipeline (`glaze_context`) now uses hybrid search automatically when embeddings exist, falling back to FTS5-only when they don't.
+1,268 cubes embedded in 19 seconds with all-MiniLM-L6-v2 (384 dims, 80MB model). 100% coverage. Hybrid search combines semantic similarity (60% weight) and FTS5 keyword match (40% weight). "Content strategy twitter" returns the exact content strategy files at 0.745 hybrid score. The MCP retrieval pipeline (`helicon_context`) now uses hybrid search automatically when embeddings exist, falling back to FTS5-only when they don't.
 
 This is the biggest retrieval quality jump so far. FTS5 keyword-only was ~25% P@3 on conceptual queries. Semantic search catches synonyms, related concepts, and fuzzy matches that keyword search misses entirely.
 
@@ -248,7 +248,7 @@ This is the biggest retrieval quality jump so far. FTS5 keyword-only was ~25% P@
 
 2. **Deep Cursor connector.** Cursor stores AI code tracking in `~/.cursor/ai-tracking/ai-code-tracking.db`. The connector now reads `scored_commits` (75 commits with AI/human line attribution) and `conversation_summaries`. Each commit includes lines added by tab completion vs composer vs human, plus an AI percentage. 24 new cubes from Cursor data alone.
 
-3. **Consolidation MCP tool.** `glaze_consolidate` is now the 12th MCP tool. Agents can trigger memory consolidation without the web UI. Combined with `glaze_context` and `glaze_triage`, an agent can now self-audit, retrieve, consolidate, and triage its own memory.
+3. **Consolidation MCP tool.** `helicon_consolidate` is now the 12th MCP tool. Agents can trigger memory consolidation without the web UI. Combined with `helicon_context` and `helicon_triage`, an agent can now self-audit, retrieve, consolidate, and triage its own memory.
 
 4. **Eval harness upgraded.** The retrieval benchmark now uses hybrid search instead of FTS5-only. P@3 jumped from 25% to 62.5%. MRR from 0.2 to 0.5. Forgetting accuracy at 93.6%. Composite eval score: 76.8%.
 
@@ -268,4 +268,4 @@ The meta-loop is the core idea. Mount Helicon stores patterns about how the huma
 
 ---
 
-*Mount Helicon is open source and built for the Qwen Cloud Global AI Hackathon, MemoryAgent track. Stack: Python, FastAPI, SQLite + FTS5, React/Vite, Qwen Cloud API (turbo/plus/max), MCP (JSON-RPC 2.0). Repository: [github.com/MorkeethHQ/glaze](https://github.com/MorkeethHQ/glaze)*
+*Mount Helicon is open source and built for the Qwen Cloud Global AI Hackathon, MemoryAgent track. Stack: Python, FastAPI, SQLite + FTS5, React/Vite, Qwen Cloud API (turbo/plus/max), MCP (JSON-RPC 2.0). Repository: [github.com/MorkeethHQ/mount-helicon](https://github.com/MorkeethHQ/mount-helicon)*

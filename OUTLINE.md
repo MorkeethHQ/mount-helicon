@@ -50,7 +50,7 @@ Mount Helicon is built on six cutting-edge techniques from 2025-2026 ML research
 
 **Layer 1: Extraction** - What did agents produce?
 - Pluggable connectors: Claude Code JSONL, Obsidian vault, git repos, ChatGPT exports, Cursor memory banks, Mem0 API, any markdown/JSON
-- Every extracted item becomes a GlazeCube (inspired by MemCube): structured object with source, timestamp, type, content hash, valid_from, confidence
+- Every extracted item becomes a HeliconCube (inspired by MemCube): structured object with source, timestamp, type, content hash, valid_from, confidence
 - SAGE-style novelty gate at ingestion: ADD / NOOP / MERGE
 
 **Layer 2: Review Patterns** - How does the human actually review?
@@ -126,7 +126,7 @@ Retrieval strategy improves: surface high-value patterns first
 
 ### Screens
 
-**Feed** - Review cards sorted by learned urgency. GlazeCube snippet, source, age, spin count, confidence badge. Approve/revise/kill + voice input.
+**Feed** - Review cards sorted by learned urgency. HeliconCube snippet, source, age, spin count, confidence badge. Approve/revise/kill + voice input.
 
 **Helicon Score** - What % of agent output you actually reviewed. Killing counts. Ignoring doesn't. Trends over time. Breakdown by source/type.
 
@@ -172,7 +172,7 @@ Any markdown/JSON -------+          | Qwen Cloud API:   |
                                     |  - anti-confab     |
                                     |                   |
                                     | SQLite:           |
-                                    |  - glaze_cubes    |
+                                    |  - helicon_cubes    |
                                     |  - reviews        |
                                     |  - patterns       |
                                     |  - audit_log      |
@@ -192,7 +192,7 @@ V2: Native Swift macOS app replaces Web UI
 
 ---
 
-## GlazeCube Schema (inspired by MemOS MemCube)
+## HeliconCube Schema (inspired by MemOS MemCube)
 
 ```python
 {
@@ -223,7 +223,7 @@ V2: Native Swift macOS app replaces Web UI
 
 | Day | Planned | Actual | Status |
 |-----|---------|--------|--------|
-| 1-2 | Connectors + GlazeCube model | 5 connectors (CC, Obsidian, Git, ChatGPT, Cursor), 1268 cubes | DONE |
+| 1-2 | Connectors + HeliconCube model | 5 connectors (CC, Obsidian, Git, ChatGPT, Cursor), 1268 cubes | DONE |
 | 3 | Qwen Cloud integration | Qwen client working (qwen-plus via DashScope) | DONE |
 | 4 | SQLite + forgetting engine | 6-table schema, Ebbinghaus decay, score, patterns | DONE |
 | 5 | Audit engine + FastAPI | 4-axis audit (82 findings), 18 API endpoints verified | DONE |
@@ -233,7 +233,7 @@ V2: Native Swift macOS app replaces Web UI
 | 10-11 | Data quality + learning loops | 91 reviews seeded, 6 patterns extracted, Qwen health report | DONE |
 | 12 | Architecture diagram + README | SVG diagram, README updated, MIT license | DONE |
 | 13 | FTS5 + Knowledge Graph | FTS5 search, entity extraction (65 entities, 1289 edges), force-directed viz | DONE |
-| 14 | MCP Server | 6-tool MCP server (glaze_health, glaze_stale, glaze_search, etc.) | DONE |
+| 14 | MCP Server | 6-tool MCP server (helicon_health, helicon_stale, helicon_search, etc.) | DONE |
 | 15 | Memory Consolidation | "Sleep" cycles, cluster detection (30 clusters), batch consolidation | DONE |
 | 16 | Contradiction Resolution | Side-by-side comparison UI, one-click resolution | DONE |
 | 17 | Retrieval Learning (Loop 4) | retrieval_log tracking, precision computation on every review | DONE |
@@ -248,7 +248,7 @@ V2: Native Swift macOS app replaces Web UI
 
 **0:00-0:15** Hook: "13 agents ran last week across Claude Code, Cursor, and ChatGPT. I reviewed 3 outputs. Shipped zero. Most memory systems would store that sentence. Mount Helicon knows it from watching my behavior."
 
-**0:15-0:45** Layer 1 - Extraction: Real GlazeCubes from 208 Claude Code transcripts and 103 memory files. A 57-day LinkedIn post (confidence: 0.0001, Weibull decay with κ=1.8 cliff). Two unreviewed resumes. A memory file that contradicts another. Novelty gate caught 14 redundant entries at ingestion.
+**0:15-0:45** Layer 1 - Extraction: Real HeliconCubes from 208 Claude Code transcripts and 103 memory files. A 57-day LinkedIn post (confidence: 0.0001, Weibull decay with κ=1.8 cliff). Two unreviewed resumes. A memory file that contradicts another. Novelty gate caught 14 redundant entries at ingestion.
 
 **0:45-1:15** Layer 2 - Review patterns: Voice review a card. Mount Helicon updates behavioral model. "You review code in 24h (confidence: 0.91, 47 data points). Content sits 14 days (confidence: 0.87). This post discussed in 6 sessions, file changed twice. Kill prediction: 91%."
 

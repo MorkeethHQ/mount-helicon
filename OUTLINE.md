@@ -232,7 +232,7 @@ V2: Native Swift macOS app replaces Web UI
 | 9 | Alibaba ECS deploy | Docker + compose ready, blocked on KYC (~Jun 28) | BLOCKED |
 | 10-11 | Data quality + learning loops | 91 reviews seeded, 6 patterns extracted, Qwen health report | DONE |
 | 12 | Architecture diagram + README | SVG diagram, README updated, MIT license | DONE |
-| 13 | FTS5 + Knowledge Graph | FTS5 search, entity extraction (65 entities, 1289 edges), force-directed viz | DONE |
+| 13 | FTS5 + Knowledge Graph | FTS5 search, entity extraction (41 entities, 605 edges), force-directed viz | DONE |
 | 14 | MCP Server | 6-tool MCP server (helicon_health, helicon_stale, helicon_search, etc.) | DONE |
 | 15 | Memory Consolidation | "Sleep" cycles, cluster detection (30 clusters), batch consolidation | DONE |
 | 16 | Contradiction Resolution | Side-by-side comparison UI, one-click resolution | DONE |

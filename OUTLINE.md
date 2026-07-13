@@ -4,7 +4,7 @@
 
 **What it is:** Agent-agnostic memory audit and review system. Reads memory from any AI tool, audits it for staleness and contradictions, learns your review patterns, and checks its own work.
 
-**Deadline:** Jul 9, 2026 (Qwen Cloud MemoryAgent hackathon)
+**Deadline:** Jul 20, 2026, 2pm PDT (Qwen Cloud MemoryAgent hackathon; verified at devpost source Jul 13, old "Jul 9" was stale)
 
 **V2:** Native Swift macOS app (post-hackathon)
 
@@ -238,7 +238,7 @@ V2: Native Swift macOS app replaces Web UI
 | 16 | Contradiction Resolution | Side-by-side comparison UI, one-click resolution | DONE |
 | 17 | Retrieval Learning (Loop 4) | retrieval_log tracking, precision computation on every review | DONE |
 | 18 | Deploy + Demo | Alibaba ECS, 3-min video | NEXT |
-| 19 | Submit | Devpost | Deadline: Jul 9 |
+| 19 | Submit | Devpost | Deadline: Jul 20 (2pm PDT) |
 
 28 API endpoints. 6 tabs (Review, Audit, Graph, Sleep, Patterns, Overview). 9 tables. MCP server with 6 tools.
 

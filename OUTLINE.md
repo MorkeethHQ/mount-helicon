@@ -25,7 +25,7 @@ Mount Helicon is built on six cutting-edge techniques from 2025-2026 ML research
 
 **Key stat:** Production memory accuracy drops to 49% after 30 days at 38% staleness (Mem0 research, ECAI 2025). Without temporal modeling, memory rots.
 
-**SAGE Novelty Gate (May 2026):** von Mises-Fisher density estimator scores new facts as novel (ADD), redundant (NOOP), or uncertain (LLM merge). Cuts API cost 3.4x vs Mem0. Mount Helicon uses this to gate memory ingestion.
+**Novelty gate at ingestion:** scores each new fact as novel (ADD), redundant (NOOP), or uncertain (LLM merge) so the store doesn't bloat with near-duplicates. Density-estimator novelty scoring is an established idea; our gate keeps provenance through a merge so a consolidated fact never loses the source it came from.
 
 ---
 
@@ -50,8 +50,8 @@ Mount Helicon is built on six cutting-edge techniques from 2025-2026 ML research
 
 **Layer 1: Extraction** - What did agents produce?
 - Pluggable connectors: Claude Code JSONL, Obsidian vault, git repos, ChatGPT exports, Cursor memory banks, Mem0 API, any markdown/JSON
-- Every extracted item becomes a HeliconCube (inspired by MemCube): structured object with source, timestamp, type, content hash, valid_from, confidence
-- SAGE-style novelty gate at ingestion: ADD / NOOP / MERGE
+- Every extracted item becomes a HeliconCube — our structured memory unit: source, timestamp, type, content hash, valid_from, confidence, per-type decay
+- Novelty gate at ingestion: ADD / NOOP / MERGE
 
 **Layer 2: Review Patterns** - How does the human actually review?
 - Learns from behavior, not words
@@ -192,7 +192,7 @@ V2: Native Swift macOS app replaces Web UI
 
 ---
 
-## HeliconCube Schema (inspired by MemOS MemCube)
+## HeliconCube Schema
 
 ```python
 {
@@ -271,7 +271,7 @@ Mount Helicon has three layers and works with any agent:
 2. **Review patterns** - behavioral memory with Weibull decay (not conversational)
 3. **Meta-audit** - three-axis audit, SSGM gates, anti-confabulation (nobody else does this)
 
-Built on six published techniques (MemOS, Memory Bear, MetaMem, SSGM, FOREVER, Honest Lying). Not invented concepts - research translated to product.
+Built on established memory-systems patterns and taken further — versioned memory units, multi-axis audit, non-uniform decay, retrieval learning — with the identity/phantom-coherence layer and the rulings-become-law loop being our own. Grounded in the literature, not a reimplementation of it.
 
 Real data: 208 Claude Code transcripts (49MB), 103 memory files (444K), 150+ Obsidian files, 652 contacts. Zero fake data.
 

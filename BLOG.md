@@ -18,9 +18,9 @@ Every memory system I looked at focuses on the same thing: store more, retrieve 
 
 ## Research Foundation
 
-I read a lot of papers before writing code. Mount Helicon borrows from six specific techniques:
+I read a lot of papers before writing code, then built Mount Helicon's own take on six established patterns:
 
-**MemOS (Shanghai Jiao Tong, 2025)** introduced MemCubes -- versioned memory units with structured metadata. Mount Helicon's HeliconCube is directly inspired by this: every memory item is an object with source, timestamp, type, content hash, confidence score, and validity window. Not raw text.
+**Structured memory units.** Versioned memory-with-metadata (rather than raw text) is a well-understood idea in the memory-systems literature. Mount Helicon's HeliconCube is our build of it: every memory item is an object with source, timestamp, type, content hash, confidence score, and validity window — plus per-type decay, which is where we go further.
 
 ```python
 @dataclass
@@ -224,13 +224,13 @@ Context impact tracking connects retrieval to outcomes. When `helicon_context` s
 
 Matching logic uses word-level tag overlap (not substring) to avoid false positives. 51 API endpoints, 14 routers, 9 MCP tools, 9 CLI commands.
 
-**Day 20:** Three research-backed features from studying Mem0, Letta, LangMem, Zep, and MemRL architectures.
+**Day 20:** Three features that build on established retrieval-and-memory patterns and take each further.
 
-**Q-value utility learning** (from MemRL, arxiv 2601.03192). Every memory gets a utility score that updates with each retrieval cycle: `Q_new = Q_old + alpha * (reward - Q_old)`. When a memory is surfaced via `helicon_context` and the human later approves it, reward=1.0. If killed, reward=0.0. The Q-value feeds back into retrieval ranking via `score = (1-lambda)*relevance + lambda*Q`. Memories that consistently help rise. Memories that keep getting surfaced but ignored sink. This is the self-improving loop the MemoryAgent track is looking for.
+**Q-value utility learning.** Reinforcement-learning utility ranking is a known pattern; our build has one deliberate difference. Every memory gets a utility score that updates with each retrieval cycle: `Q_new = Q_old + alpha * (reward - Q_old)`. When a memory is surfaced via `helicon_context` and the human later approves it, reward=1.0. If killed, reward=0.0. The Q-value feeds back into retrieval ranking via `score = (1-lambda)*relevance + lambda*Q`. The difference: reward comes from a *human* ruling only, never the system's own auto-triage — so the loop can't reinforce its own echo, the failure mode a naive utility signal has.
 
-**Entity-boosted retrieval** (from Mem0's hybrid search). Mount Helicon already had 41 entities and 605 edges in its knowledge graph, but they weren't wired into retrieval. Now: when a task mentions an entity (e.g., "relay"), the system finds all cubes linked to that entity in the graph and boosts their retrieval score. Three signals combined: FTS relevance + Q-value utility + entity graph boost.
+**Entity-boosted retrieval.** Entity-aware hybrid search is an established retrieval pattern. Mount Helicon already had 41 entities and 605 edges in its knowledge graph, but they weren't wired into retrieval. Now: when a task mentions an entity (e.g., "relay"), the system finds all cubes linked to that entity in the graph and boosts their retrieval score. Three signals combined: FTS relevance + Q-value utility + entity graph boost.
 
-**Core Memory Compiler** (from Letta's `Memory.compile()` and LangMem's prompt optimization). Mount Helicon compiles its learned patterns into injectable files: `core-memory.md` (top 20 highest-utility approved memories), 6 skill files (one per task category with feedback rules), and a `claude-md-patch.md` (suggested CLAUDE.md additions). These are files agents can load without calling any MCP tool. The compiler runs via `helicon compile` CLI or `helicon_compile` MCP tool. 8 files, 7KB total, from 1,268 cubes and 772 reviews.
+**Core Memory Compiler.** Compiling memory into loadable context is an established pattern; ours compiles from *human rulings and Golden Rules with provenance*, not raw memory — so the output is governed law, not a summary. It produces `core-memory.md` (top 20 highest-utility approved memories), 6 skill files (one per task category with feedback rules), and a `claude-md-patch.md` (suggested CLAUDE.md additions). These are files agents can load without calling any MCP tool. The compiler runs via `helicon compile` CLI or `helicon_compile` MCP tool.
 
 57 API endpoints, 14 routers, 11 MCP tools, 11 CLI commands.
 

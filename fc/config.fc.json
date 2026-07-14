@@ -1,0 +1,24 @@
+{
+  "db_path": "/tmp/helicon.db",
+  "qwen_api_key": "",
+  "qwen_model": "qwen3.6-plus",
+  "qwen_base_url": "https://token-plan.ap-southeast-1.maas.aliyuncs.com/compatible-mode/v1",
+  "embeddings": {
+    "api_key": "",
+    "base_url": "https://dashscope-intl.aliyuncs.com/compatible-mode/v1",
+    "model": "text-embedding-v4",
+    "dim": 1024
+  },
+  "connectors": {},
+  "claims": {
+    "canonical": {
+      "wins": "mindmap.md",
+      "episode": "ep29.md"
+    }
+  },
+  "server": {
+    "host": "0.0.0.0",
+    "port": 9000,
+    "password": ""
+  }
+}

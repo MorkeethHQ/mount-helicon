@@ -1,0 +1,14 @@
+# Build context is repo root; keep the image lean and keyless.
+.git
+web/node_modules
+web/src
+**/__pycache__
+*.pyc
+.pytest_cache
+data/compiled
+tests
+scripts
+docs
+config.json
+.env
+*.md

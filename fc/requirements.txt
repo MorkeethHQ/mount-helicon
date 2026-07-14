@@ -1,0 +1,11 @@
+# Lean runtime deps for the Function Compute read-only dashboard/API.
+# Deliberately drops sentence-transformers/torch and gitpython: the FC image
+# only SERVES the seeded DB + static dashboard. Local embeddings are imported
+# lazily (helicon/embeddings.py) and never load here because retrieval, when
+# exercised, goes to Alibaba DashScope. Keeping torch out takes the image from
+# ~3GB to <300MB and the cold start from minutes to seconds.
+openai>=1.30.0
+fastapi>=0.111.0
+uvicorn>=0.30.0
+pyyaml>=6.0
+numpy>=1.26.0

@@ -1,0 +1,43 @@
+edition: 3.0.0
+name: mount-helicon
+access: "${vars.access}"
+
+vars:
+  # Override on the CLI or in .env-style export before `s deploy`. See DEPLOY-FC.md.
+  access: default                     # `s config add` profile name (holds AK/SK)
+  region: ap-southeast-1              # Singapore — matches the Model Studio endpoint region
+  namespace: helicon                  # your ACR namespace
+  image: "registry.${vars.region}.aliyuncs.com/${vars.namespace}/helicon-fc:latest"
+
+resources:
+  helicon:
+    component: fc3
+    props:
+      region: "${vars.region}"
+      functionName: mount-helicon
+      description: "Mount Helicon — read-only memory-eval dashboard + API (Qwen Cloud Hackathon)"
+      runtime: custom-container
+      # Web function: the container's HTTP server owns the port; FC forwards the
+      # trigger to it. Must equal PORT in the Dockerfile / entrypoint.
+      customContainerConfig:
+        image: "${vars.image}"
+        port: 9000
+      cpu: 0.5
+      memorySize: 1024                # 34MB DB in /tmp + FastAPI; 1GB is comfortable
+      diskSize: 512                   # writable /tmp for the DB copy
+      timeout: 60
+      instanceConcurrency: 20
+      environmentVariables:
+        # Injected at deploy time from your shell (deploy-fc.sh passes them through).
+        # Never commit real keys here — these two are the whole Alibaba Cloud
+        # backend dependency: Model Studio inference + DashScope embeddings.
+        QWEN_API_KEY: "${env.QWEN_API_KEY}"
+        DASHSCOPE_API_KEY: "${env.DASHSCOPE_API_KEY}"
+      triggers:
+        - triggerName: httpTrigger
+          triggerType: http
+          triggerConfig:
+            authType: anonymous
+            methods:
+              - GET
+              - POST

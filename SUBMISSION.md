@@ -41,6 +41,8 @@ Qwen is load-bearing, not decorative. ~22 modules call it: contradiction and ide
 - **Real-world relevance + market (25%)** - runs on a real 5,705-memory store across ~15 live projects and six sources; the field (Mem0's own 2026 report, GLOVE) now agrees memory maintenance is the bottleneck.
 - **Presentation + docs (15%)** - this architecture, a 3-min demo, and the one-command moat demo.
 
-## What is NOT yet airtight (honest)
+## The edge, now closed (Output → Attribute → Rule → Law as one path)
 
-The one edge that fully earns the thesis is **output-failure attributed automatically back to the memory that caused it** (Output → Attribute → Rule as one automatic path). Today `review --terminals` verifies output against reality; `lens` traces an answer to its memories; `regret` catches wrongly-forgotten memory. They are not yet wired into one automatic loop. Closing that edge is the headline build for the remaining window.
+The one edge that fully earns the thesis is **output-failure attributed back to the memory that caused it**. It is now wired: `review --terminals` catches a contradicted output; `helicon attribute <finding>` retrieves the pre-existing memory cube(s) that assert the false claim; `helicon resolve <id> --truth "…" --retire <cube_id>` writes the reality-checked correction AND supersedes the causing memory, so retrieval stops serving the rot at its source. The correction compiles into GOLDEN_RULES the agent obeys next session. Verified live: a "Yieldbound is a wallet tracker" contradiction traced back to the exact memories asserting it.
+
+Honest scope: attribution v1 is deterministic FTS retrieval (the human picks which surfaced candidate to retire); semantic + Qwen-confirmed ranking is the next refinement. The loop exists end-to-end; the ranking gets sharper.

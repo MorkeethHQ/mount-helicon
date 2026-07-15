@@ -223,7 +223,7 @@ V2: Native Swift macOS app replaces Web UI
 
 | Day | Planned | Actual | Status |
 |-----|---------|--------|--------|
-| 1-2 | Connectors + HeliconCube model | 5 connectors (CC, Obsidian, Git, ChatGPT, Cursor), 1268 cubes | DONE |
+| 1-2 | Connectors + HeliconCube model | 5 connectors (CC, Obsidian, Git, ChatGPT, Cursor), 1268 memories | DONE |
 | 3 | Qwen Cloud integration | Qwen client working (qwen-plus via DashScope) | DONE |
 | 4 | SQLite + forgetting engine | 6-table schema, Ebbinghaus decay, score, patterns | DONE |
 | 5 | Audit engine + FastAPI | 4-axis audit (82 findings), 18 API endpoints verified | DONE |

@@ -27,7 +27,7 @@ Everything in `fc/` is built and the **runtime path is verified locally** (lean 
 > seed from `scripts/demo_seed.py`) is baked in. **Never `data/helicon.db`**: the
 > real store holds journal, finance, wallet, health and passport memories that do
 > not leave the machine. `deploy-fc.sh` refuses to build if the store it is about
-> to publish has more than 500 cubes or any personal marker. "Zero fake data" is
+> to publish has more than 500 memories or any personal marker. "Zero fake data" is
 > earned by the LOCAL run in the demo video and by ROT.md; the deploy is a
 > deployment proof, not a data proof.
 - `fc/requirements.txt` — lean serve deps only.
@@ -62,7 +62,8 @@ export DASHSCOPE_API_KEY=<DashScope key>     # embeddings   (both are in your lo
 ./fc/deploy-fc.sh
 
 # 5. the script prints the function's public HTTP URL. Verify:
-curl <url>/api/health          # -> {"status":"ok","cubes":11}   (the seeded demo store)
+curl <url>/api/health          # -> {"status":"ok","memories":11}   (the seeded demo store;
+                               #    "cubes" is still emitted as a deprecated alias)
 open <url>/                    # the dashboard, live on Function Compute
 ```
 

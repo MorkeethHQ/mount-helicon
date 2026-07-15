@@ -34,6 +34,43 @@ Plus the same evaluators pointed at the other producers of agent behavior: **ski
 
 Qwen is load-bearing, not decorative. ~22 modules call it: contradiction and identity judging (the audit), consolidation synthesis, portrait narration, next-move generation, volatility scoring. Embeddings run on Alibaba **DashScope** (`text-embedding-v4`) and inference on Alibaba **Model Studio / MaaS** (`token-plan.ap-southeast-1.maas.aliyuncs.com`). Kill the key and half the intelligence layer goes dark. The backend already depends on Alibaba Cloud services; the read-only dashboard/API deploys on Alibaba **Function Compute** for the deployment proof (ECS was dropped on KYC).
 
+## What `helicon report` says about itself right now: DEGRADED
+
+Run it. It prints **DEGRADED**, and that is the submission's most honest thirty
+seconds:
+
+```
+Overall: DEGRADED
+4. Cross-session accuracy                 DEGRADED
+   snapshots: 1 regressed of 13
+   cross-source pairing: 8 live conflict(s), 3 open finding(s)
+```
+
+The threshold for retrieval regression is **zero**. One live memory that used to
+be retrieved for the task "Search" no longer is, so the exam refuses to call
+itself healthy. We are not hiding that behind a green light, because a system
+that reports its own degradation is the product; one that hides it is just
+another benchmark.
+
+What that number is NOT: on 2026-07-15 this read **12 of 13 regressed**, and it
+was wrong. `regressed` meant "anything changed at all", so it counted the loop
+WORKING as a failure — 16 of 17 missing baseline memories were missing because
+Helicon had killed them as rot, retrieval correctly stopped serving them, and a
+better memory took each vacated slot. The exam was indicting the product for
+succeeding. A regression is now only what it should always have been: a memory
+that is still live and no longer retrieved. 12 -> 1, and the 1 is real.
+
+The same day it also turned out the exam could not reproduce its own verdict —
+three identical runs gave 11/13, 12/13, 11/13, because retrieval calls a remote
+reranker that is not deterministic and silently fell back to a different ranking
+whenever the call failed. Fixed (stable tie-breaks, memoized rerank), with the
+honest caveat that caching makes the answer reproducible without making the
+model deterministic.
+
+The remaining 8 conflicts are the claim selector, and at least some are the same
+both-poles shape GOLDEN_RULES already carries dismissals for. Named here rather
+than discovered by a judge.
+
 ## How the loop answers the judging criteria
 
 - **Technical + engineering innovation (30%)** - a closed evaluate-attribute-rule-law loop over memory, with a deterministic 12-class exam and Qwen-judged contradiction, all read-only.

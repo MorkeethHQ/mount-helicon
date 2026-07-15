@@ -20,10 +20,18 @@ RUN chmod +x ./fc/entrypoint.sh
 # `cd web && npx vite build` — the image never runs Node.
 COPY web/dist/ ./static/
 
-# Seeded, REAL memory store (34MB, read-only baseline). entrypoint copies it to
-# /tmp on boot so SQLite can open it writable. Zero fake data — this is Oscar's
-# actual 5.7k-cube store.
-COPY data/helicon.db ./data/helicon.db
+# The SEEDED demo store (scripts/demo_seed.py), read-only baseline. entrypoint
+# copies it to /tmp on boot so SQLite can open it writable.
+#
+# This is deliberately NOT data/helicon.db. The FC trigger is authType:anonymous
+# and the URL is submitted publicly, so whatever is baked here is published to
+# the open internet — and the real store holds journal, finance, wallet, health
+# and passport memories that must never leave this machine. The image layer is
+# the leak even behind an app password: anyone who pulls it has the file.
+#
+# "Zero fake data" is earned by the LOCAL run in the demo and by ROT.md, not by
+# hosting a private life at an anonymous URL. The deploy is a DEPLOYMENT proof.
+COPY data/helicon-demo.db ./data/helicon.db
 
 # FC web function: container listens on this port, FC's http trigger forwards to
 # it. Matches customContainerConfig.port in s.yaml.

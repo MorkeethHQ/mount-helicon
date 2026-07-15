@@ -14,11 +14,22 @@ ECS was dropped on KYC (Jul 3). FC needs no long-lived server and no inbound fir
 
 ## What's already prepped (done)
 
-Everything in `fc/` is built and the **runtime path is verified locally** (lean image deps boot `helicon.api.app`, the FC-style keyless config renders, the real 6,117-cube store serves, `/api/health` → `{"status":"ok"}`, SPA + `/api/findings` return real data):
+Everything in `fc/` is built and the **runtime path is verified locally** (lean image deps boot `helicon.api.app`, the FC-style keyless config renders, the seeded demo store serves, `/api/health` → `{"status":"ok"}`, SPA + `/api/findings` return real data):
 
 - `fc/Dockerfile` — lean custom-container image (no torch/sentence-transformers → <300MB, seconds cold start). Bakes the helicon package, the prebuilt `web/dist` dashboard, and the seeded read-only `data/helicon.db`.
 - `fc/entrypoint.sh` — copies the DB to writable `/tmp`, renders `/tmp/config.json` from the two env-var keys (image stays keyless), serves on port 9000.
 - `fc/config.fc.json` — keyless config template (Model Studio + DashScope endpoints baked, keys injected at runtime).
+
+> **What this publishes.** The FC http trigger is `authType: anonymous` and the URL is
+> submitted publicly, so anything baked into the image is published to the open
+> internet — and an image layer is the leak even behind an app password, because
+> anyone who pulls it has the file. Only `data/helicon-demo.db` (the synthetic
+> seed from `scripts/demo_seed.py`) is baked in. **Never `data/helicon.db`**: the
+> real store holds journal, finance, wallet, health and passport memories that do
+> not leave the machine. `deploy-fc.sh` refuses to build if the store it is about
+> to publish has more than 500 cubes or any personal marker. "Zero fake data" is
+> earned by the LOCAL run in the demo video and by ROT.md; the deploy is a
+> deployment proof, not a data proof.
 - `fc/requirements.txt` — lean serve deps only.
 - `fc/s.yaml` — Serverless Devs `fc3` web function: custom-container, port 9000, anonymous HTTP trigger, keys via `environmentVariables`.
 - `fc/deploy-fc.sh` — build → push to ACR → `s deploy`, one command.
@@ -30,7 +41,7 @@ Prereqs: an Alibaba Cloud account (already KYC'd for FC), Docker running locally
 ```bash
 # 0. from repo root, make sure the dashboard bundle + store are present
 cd web && npx vite build && cd ..        # only if web/dist is stale
-ls data/helicon.db                        # the seeded real store (baked into the image)
+python3 scripts/demo_seed.py              # (re)build data/helicon-demo.db — the ONLY store baked in
 
 # 1. install the two CLIs (once)
 npm i -g @serverless-devs/s               # Serverless Devs v3
@@ -51,7 +62,7 @@ export DASHSCOPE_API_KEY=<DashScope key>     # embeddings   (both are in your lo
 ./fc/deploy-fc.sh
 
 # 5. the script prints the function's public HTTP URL. Verify:
-curl <url>/api/health          # -> {"status":"ok","cubes":6117}
+curl <url>/api/health          # -> {"status":"ok","cubes":11}   (the seeded demo store)
 open <url>/                    # the dashboard, live on Function Compute
 ```
 

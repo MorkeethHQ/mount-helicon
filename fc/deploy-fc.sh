@@ -23,7 +23,35 @@ cd "$REPO_ROOT"
 
 echo "==> Preflight"
 [ -f web/dist/index.html ] || { echo "web/dist missing — run: (cd web && npx vite build)"; exit 1; }
-[ -f data/helicon.db ]     || { echo "data/helicon.db missing"; exit 1; }
+[ -f data/helicon-demo.db ] || { echo "data/helicon-demo.db missing — run: python3 scripts/demo_seed.py"; exit 1; }
+
+# The store about to be published. authType is anonymous and the URL goes on
+# Devpost, so this is a one-way door: an image pushed to ACR with a private life
+# in layer 8 cannot be un-published. The Dockerfile once baked data/helicon.db
+# (6,880 real cubes: journal, finance, wallet, passport, private keys) while
+# entrypoint.sh's comments claimed it served a seeded store. Nothing caught it,
+# because the safety note in DEPLOY-FC.md reasoned about the API keys instead.
+# Assert on the artifact, not the intent.
+echo "==> Preflight: the store being published"
+python3 - <<'PY' || exit 1
+import sqlite3, sys
+db = "data/helicon-demo.db"
+conn = sqlite3.connect(db)
+n = conn.execute("SELECT COUNT(*) FROM helicon_cubes").fetchone()[0]
+hits = {}
+for term in ("private key", "seed phrase", "passport", "salary", "recruiter",
+             "journal", "wallet", "0x"):
+    c = conn.execute("SELECT COUNT(*) FROM helicon_cubes "
+                     "WHERE lower(content) LIKE ?", (f"%{term}%",)).fetchone()[0]
+    if c:
+        hits[term] = c
+if n > 500:
+    sys.exit(f"    REFUSED: {db} has {n} cubes — that is not the demo seed. "
+             f"Rebuild it: python3 scripts/demo_seed.py")
+if hits:
+    sys.exit(f"    REFUSED: personal markers in the store to be published: {hits}")
+print(f"    ok: {n} seeded cubes, no personal markers -> safe to publish")
+PY
 : "${QWEN_API_KEY:?export QWEN_API_KEY before deploy (Model Studio inference key)}"
 : "${DASHSCOPE_API_KEY:?export DASHSCOPE_API_KEY before deploy (embeddings key)}"
 command -v s >/dev/null || { echo "Serverless Devs 's' not installed — npm i -g @serverless-devs/s"; exit 1; }

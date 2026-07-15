@@ -2,6 +2,8 @@
 
 *Oscar, June 2026*
 
+> **Dated build diary.** The Build Timeline below is history: each day's numbers were true when written and are deliberately left alone, because rewriting them would forge the record this project exists to keep. Numbers stated in the present tense were refreshed on 2026-07-15. For current counts, README.md and ARCHITECTURE.md are the maintained surfaces, and `python3 -m helicon.docdrift` checks them against source.
+
 ---
 
 I have 103 memory files spread across Claude Code, ChatGPT, and Cursor. I reviewed maybe 10 of them last month. I shipped from maybe 3. The rest sit there, decaying, contradicting each other, referencing "this week" from five weeks ago. Nobody checks them.
@@ -66,7 +68,7 @@ Two more systems shaped specific components. **Hermes Agent (Nous Research, Feb 
 
 Mount Helicon has three layers:
 
-**Layer 1 (Extraction):** Five connectors read from Claude Code JSONL transcripts, Claude Code memory files, Obsidian vaults, git repositories, ChatGPT exports, and Cursor memory banks. Each connector produces `ConnectorResult` objects, which the scanner converts to HeliconCubes with content hashing and optional Qwen enrichment (summarization + SAGE novelty gate).
+**Layer 1 (Extraction):** Connectors read from Claude Code JSONL transcripts, Claude Code memory files, Obsidian vaults, git repositories, agent skill files, ChatGPT exports, and Cursor memory banks. Twelve connector modules ship today; four are enabled in this repo's config (Claude Code, Obsidian, git, skills), and the rest are there for stores Helicon audits but does not own. Each connector produces `ConnectorResult` objects, which the scanner converts to HeliconCubes with content hashing and optional Qwen enrichment (summarization + SAGE novelty gate).
 
 **Layer 2 (Review Pattern Learning):** Learns from behavior, not instructions. The system tracks review velocity by type, shipping rates (what gets approved vs. killed), spin detection (same topic discussed across 4+ sessions without file changes), and kill prediction. Every review decision feeds back into the model.
 
@@ -145,7 +147,7 @@ Memory consolidation runs as a "sleep" cycle, borrowing the neuroscience metapho
 
 ## MCP Server
 
-Mount Helicon exposes 8 tools via an MCP server (JSON-RPC 2.0 over stdio) so AI agents can audit their own memory:
+Mount Helicon exposes 14 tools via an MCP server (JSON-RPC 2.0 over stdio) so AI agents can audit their own memory. The eight below are the set this post was written around; README.md carries the current table of all 14:
 
 - `helicon_health` -- overall memory health score, cube counts, decay stats by type
 - `helicon_stale` -- find items below a confidence threshold
@@ -253,6 +255,8 @@ This is the biggest retrieval quality jump so far. FTS5 keyword-only was ~25% P@
 4. **Eval harness upgraded.** The retrieval benchmark now uses hybrid search instead of FTS5-only. P@3 jumped from 25% to 62.5%. MRR from 0.2 to 0.5. Forgetting accuracy at 93.6%. Composite eval score: 76.8%.
 
 5. **Auto-inject tested and working.** `inject_into_claude_code()` writes 7 skill files to `~/.claude/skills/`: core memory + 6 per-category skill files. Claude Code loads these automatically. The compiler-to-agent loop is closed.
+
+   > **Correction, 2026-07-15:** that last sentence did not survive. `inject_into_claude_code()` still exists in `compiler.py` and still works if you call it, but no command ever wires it up, so nothing invokes it in practice and the push half of the loop is not closed. The pull half is what shipped: `helicon_context` over MCP. The claim is left standing above because the timeline is a record, not a pitch. `helicon policy --inject` is the write-back that did close, into `~/.claude/GOLDEN_RULES.md`.
 
 6. **Triage rules broadened.** Added confidence floor (kill below 20%), unreviewed-type rules (kill types with zero human reviews below 70%), and high-kill-rate behavioral (>95% kill rate, threshold raised to 60%). Score pushed from 60.9% to 76.2%.
 

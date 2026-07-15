@@ -237,10 +237,10 @@ V2: Native Swift macOS app replaces Web UI
 | 15 | Memory Consolidation | "Sleep" cycles, cluster detection (30 clusters), batch consolidation | DONE |
 | 16 | Contradiction Resolution | Side-by-side comparison UI, one-click resolution | DONE |
 | 17 | Retrieval Learning (Loop 4) | retrieval_log tracking, precision computation on every review | DONE |
-| 18 | Deploy + Demo | Alibaba ECS, 3-min video | NEXT |
+| 18 | Deploy + Demo | Alibaba Function Compute (ECS dropped on KYC, Jul 3; see DEPLOY-FC.md) + Cloud Shell proof, 3-min video | NEXT |
 | 19 | Submit | Devpost | Deadline: Jul 20 (2pm PDT) |
 
-28 API endpoints. 6 tabs (Review, Audit, Graph, Sleep, Patterns, Overview). 9 tables. MCP server with 6 tools.
+Where that plan landed, as of 2026-07-15: ~90 API endpoints across 22 routers, 14 web tabs, 24 tables, an MCP server with 14 tools, and 43 CLI commands. These are checked against source by `python3 -m helicon.docdrift`, so recompute rather than trust this line.
 
 ---
 

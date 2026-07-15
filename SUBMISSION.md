@@ -24,7 +24,7 @@ Mount Helicon is the system that closes that loop: it evaluates memory by its ou
 | **Store** | Is memory internally true? | `helicon audit` (12-class rot exam) | solid |
 | **Retrieve** | Is the retrieved context right? | `helicon battery` / `helicon snapshot` | solid |
 | **Output** | Does the agent's claim hold vs reality? | `helicon review --terminals [--run]` | shipped Jul 13 |
-| **Attribute** | Which memory caused the bad output? | `helicon lens` (causal provenance) | exists, closing the edge |
+| **Attribute** | Which memory caused the bad output? | `helicon attribute <finding>` | shipped Jul 13 (775e9b6); v1 ranking is deterministic FTS, see below |
 | **Rule** | Human settles it, once | `helicon resolve <id>` | solid |
 | **Law** | The agent obeys it next session | `helicon policy --inject` → `GOLDEN_RULES.md` | wired Jul 13 |
 
@@ -38,7 +38,7 @@ Qwen is load-bearing, not decorative. ~22 modules call it: contradiction and ide
 
 - **Technical + engineering innovation (30%)** - a closed evaluate-attribute-rule-law loop over memory, with a deterministic 12-class exam and Qwen-judged contradiction, all read-only.
 - **Creative AI implementation + architecture (30%)** - the thesis: evaluate memory by its output, not in isolation. Nobody ships a productized knowledge-memory verifier with human rulings that compile into obeyed law.
-- **Real-world relevance + market (25%)** - runs on a real 5,705-memory store across ~15 live projects and six sources; the field (Mem0's own 2026 report, GLOVE) now agrees memory maintenance is the bottleneck.
+- **Real-world relevance + market (25%)** - runs on a real store of ~6,900 memories (~3,800 live) across ~15 live projects, scanned from Claude Code, git, Obsidian and agent skill files. It grows on every scan, so `helicon doctor` prints the count of the day rather than this sentence claiming a fixed one. The field (Mem0's own 2026 report, GLOVE) now agrees memory maintenance is the bottleneck.
 - **Presentation + docs (15%)** - this architecture, a 3-min demo, and the one-command moat demo.
 
 ## The edge, now closed (Output → Attribute → Rule → Law as one path)

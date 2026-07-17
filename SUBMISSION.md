@@ -2,27 +2,64 @@
 
 **Deadline:** Jul 20, 2026, 2:00 PM PDT (verified at the Devpost source Jul 16; the "Jul 8" on early posts was the original date, extended). **Prize:** $7K cash + $3K Alibaba Cloud credits per track. **Video:** under 3 minutes.
 
-Mount Helicon is the **exam a memory store never runs on itself**: it audits a live memory for rot, lets a human rule a contradiction once, compiles that ruling into law the agent obeys before it writes, and **re-alarms the instant the ruled-wrong value returns**. Memory stores keep the write path. Helicon is the verification layer on top of it.
+Mount Helicon is the **exam a memory store never runs on itself**: it audits a live memory for rot, checks what agents *claimed* against reality, lets a human rule a contradiction once, compiles that ruling into law the agent obeys before it writes, and **re-alarms the instant the ruled-wrong value returns**. Memory stores keep the write path. Helicon is the verification layer on top of it.
+
+And verification is not the point, it is the precondition. **Memory you have not verified is memory you cannot safely move.** Rot is why context does not port between harnesses, so the same exam that catches the rot is what lets memory cross from Claude Code to Cursor without carrying it along, and what turns "which model should I trust" into a query instead of a vibe.
+
+Everything below runs on the author's real store: **~7,800 memories, ~4,200 live as of 2026-07-17**, from real Claude Code transcripts, a real Obsidian vault, and real git history. That count is stamped rather than stated because it is a fast fact: it grew by 270 during the writing of this document, and `helicon doctor` prints today's. (A count with a shelf life is exactly the class `helicon move` holds back at the border, below. The rule applies to this file too.) Every number here was re-run the day it was written. The one synthetic fixture in the repo is labelled as such, in the section that uses it.
 
 ---
 
-## Hero 1: audit Alibaba's own recommended Qwen memory backend (one command, zero setup)
+## Hero 1: Qwen finds the one real fork in my own memory, and kills three lookalikes
 
-Alibaba's Model Studio docs recommend **Mem0** (with AnalyticDB) as the memory backend for Qwen agents. Mem0 stores and retrieves; its docs never mention contradiction, decay, or a fork in what an entity *is*. Helicon reads a Mem0 store **read-only** (via the shipped `mem0` connector) and runs the rot exam on it:
+Not a fixture. This is the author's live store, scanned from real Claude Code transcripts, a real Obsidian vault, and real git history.
+
+R11 asks a question a memory store never asks: *do two sources disagree about what a thing IS?* On the real store it finds four candidates. Only one is real, and **this is where Qwen becomes load-bearing rather than decorative.**
+
+The gate used to be embedding cosine. Measured live on 2026-07-17:
+
+| Entity | Definition A | Definition B | cosine | cosine says | **Qwen says** | truth |
+|---|---|---|---|---|---|---|
+| `yieldbound` | a treasury where agents spend yield | a wallet tracker | 0.354 | fork | **fork** | real |
+| `qwen` | the verification brain | a measurably good memory judge | 0.367 | fork | **clean** | artifact |
+| `litmus` | a layer | the verification layer | 0.390 | fork | **clean** | artifact |
+
+The threshold is 0.45, so cosine keeps all of them. **The real fork sits 0.013 away from an artifact.** No threshold recovers that, and it isn't mis-tuning: cosine measures semantic *distance*, and "verification brain" vs "memory judge" are distant but perfectly compatible. Contradiction is a logical relation, not a distance. `qwen3.6-flash` reads all three correctly, including *why* litmus is fake: **"Item B is a more specific instance of Item A."**
 
 ```bash
-python3 scripts/demo_mem0_audit.py --mock     # bundled Mem0-format store, no key/account
-MEM0_API_KEY=m0-... python3 scripts/demo_mem0_audit.py   # your real Mem0 store
+$ helicon audit                 # cosine gate, free, deterministic
+  R11  Identity coherence   ROT FOUND
+       4 entity definition(s) forked: machine (tool/loop), yieldbound (treasury/tracker),
+       litmus (layer/verificatio) [cosine-only, unjudged]
+
+$ helicon audit --judge         # the Qwen judge decides
+  R11  Identity coherence   ROT FOUND
+       2 entity definition(s) forked: machine (tool/loop), yieldbound (treasury/tracker)
+       (+2 genus candidate(s) dropped by the qwen-judged gate)
 ```
 
-Four phases, end to end:
+Then the loop the store cannot run. The fork is real, and the two sides come from two different tools:
 
-1. **Audit** — the Mem0 store holds `Aurora is a payments protocol` and `Aurora is a lending market`. Mem0 kept both; it cannot *see* the identity fork. Helicon's R11 gate does.
-2. **Rule** — you rule Aurora canonical (`a payments protocol`). The verdict is stored with provenance.
-3. **Compile to law** — the ruling becomes a line in `GOLDEN_RULES.md`, the file the agent reads before it writes.
-4. **Never-twice** — a *new* memory arrives re-asserting `Aurora is a lending market after all`. Mem0 would just store it, recency winning. Helicon **re-alarms** — the ruling you made fires again the instant it's contradicted.
+```
+$ helicon resolve 355
 
-That fourth phase is the whole thesis in one screen: **a memory store can represent SUPERSEDED (recency wins); it cannot represent FALSE-and-stays-false.** Helicon can.
+#355  [warning]  filed 2026-07-14T00:47
+Identity fork: 'yieldbound' is defined as treasury (2 sources) vs tracker (1 source)
+
+A: treasury   claude-code:session_30d76be2
+   | Yieldbound, a treasury where agents spend yield and never touch
+B: tracker    obsidian:02 Content/hackathon-continuation-arc.md
+   | Yieldbound is a wallet tracker
+
+Decide:  helicon resolve 355 --truth "<the canonical definition>"
+   or:   helicon resolve 355 --dismiss "why"
+```
+
+A Claude Code session and an Obsidian doc disagree about what my own project *is*, and neither tool can see the other. **You rule it once.** The ruling compiles into `GOLDEN_RULES.md`, the file the agent reads before it writes, and from then on `helicon guard` blocks the losing definition at write time (Hero 2), forever, no matter how recently it is re-asserted.
+
+That last step is the thesis in one screen: **a memory store can represent SUPERSEDED (recency wins); it cannot represent FALSE-and-stays-false.** Helicon can, because a human said so and the ruling is not a memory that can decay.
+
+The judge is greedy (`temperature=0`). A verdict that changes between two identical calls is not a verdict, and this exam has been burned by a non-deterministic remote call once already (see below). `audit --judge` reproduces across runs; `audit` alone stays deterministic, free, and honest about which gate produced its number.
 
 ## Hero 2: the ruling BINDS at write time (guard)
 
@@ -85,6 +122,64 @@ Mount Helicon closes that loop: it evaluates memory by its output, attributes a 
 | **Law** | The agent obeys it next session | `helicon policy --inject` → `GOLDEN_RULES.md`, enforced at write time by `helicon guard` | wired |
 
 Same evaluators point at the other producers of agent behavior: **skills** (`connectors/skills.py`), **routines/crons** (`stackwatch.py`), and the **regret** signal (`regret.py`), which tracks killed memory the output later needed back.
+
+### The OUTPUT stage, which is where the thesis actually earns its keep
+
+Every memory tool grades memory against itself. This one grades it against reality. `review --terminals` reads what agents on this board *claimed* and checks each claim against the world, live:
+
+```
+$ helicon review --terminals
+
+  AGENT-OUTPUT REVIEW - 5 claim(s) need you (verified claims hidden)
+
+  ┌─ x-engine  (x-engine · night-run-2026-07-13)
+  │ ✗ [contradicted]  The brief's framing is right: post #7 shipped human-written over 6 AI drafts
+  │     ↳ claims shipped, but branch 'night-run-2026-07-13' has NO upstream - 15 commit(s) never left this machine
+  ┌─ Helicon  (helicon · extra-mile/helicon-2026-07-16)
+  │ ? [unverified]  **310 → 344 tests. Every fix mutation-tested.**
+  │     ↳ test files present, claimed count NOT re-run - add --run
+```
+
+An agent said **shipped**. Git says fifteen commits never left the laptop. That is `published != true` caught on a live claim, on a real board, by a check that cost nothing and asked no model's opinion.
+
+Note the second line too, because it is the harder discipline: a claim it *cannot* check is marked `unverified`, never `pass`. `unverified` is excluded from the pass/fail denominator entirely rather than scored as a win. `--run` actually re-runs the test suite the agent bragged about. **A tool that graded its own homework would have called both of those green.**
+
+## Why the exam is not the product: verified memory is portable memory
+
+On Jul 9, 2026, Sriram Krishnan (a16z) asked for a desktop agent super app: **(1)** switch and multiplex harnesses and models, **(2)** make it easy to move memory and context, **(3)** orchestrate between models, **(4)** retroactively look at usage and optimize for cost and results.
+
+(1) is the commodity, and several tools do it. **(2) is where it collapses**, because each platform stores context in a shape that only maps to its own retrieval logic. But that is only half the reason. The other half is that **you cannot safely move memory you have not verified**, and nobody verifies it. Rot is why memory does not port. That reframes everything above: the exam is not the product, the exam is what makes the move safe. It is the customs check at the border.
+
+```
+$ helicon move --from ~/.claude/CLAUDE.md --to cursor
+
+  CONTEXT MOVE — /Users/morkeeth/.claude/CLAUDE.md -> cursor format
+
+  44 item(s): 43 verified -> move, 1 held back
+
+  HELD BACK (not moved, memory does not travel with rot):
+    - *Live layer* (00 Dashboard: dashboard, review-queue, opportunities, to   [volatile ('this week')]
+```
+
+Point it at your own `CLAUDE.md`, `AGENTS.md`, or `.cursorrules`; it reads what you already have. Run it against **this repo's own** `CLAUDE.md` and it holds back Helicon's own stale stats (`~3,800 live memories of ~6,900 total`, `Composite: ~67 (as of 2026-07-13)`) because a fact with a timestamp in it is a fact with a shelf life. The tool refuses to carry its own drift across the border. `--verify-contradictions` adds the Qwen judge (the same one from Hero 1) so an item that contradicts an already-moved item is held too.
+
+**(3) and (4) are reads of the eval store, not new capabilities.** Once agent output is verified against reality, "which model should I trust" is a ranked query over outcomes you already have:
+
+```
+$ helicon route
+  ▸ testing:  route to Opus 4.8 [claude-code]   verified 5/6 · Wilson LB 0.436
+  ▸ api-surface:  leaning Opus 4.8 (verified 2/2) — provisional, n<5, not a firm route
+                  need 3 more sample(s) to confirm
+
+$ helicon runs                      # score = verified yield / cost - damage
+  when              sess     out      dur   verified   score
+  2026-07-16 07:25     4    1.4M   948.8m       9/13    0.42
+  2026-07-15 07:06     7    5.9M  1448.8m       8/11    0.06
+```
+
+**The honest state of (3) and (4), because the numbers are thin and a judge will find that anyway:** `route` says "only model with evidence" for every task class, because this operator runs one harness, so it can rank but has nothing to route *between* yet. `leaderboard` reads 1,088 attributed commits across 29 repos and 8 models, but finds **0 reverts**, so its survival bound currently ranks sample size rather than quality. Both are real, wired to real evidence, and early. Neither is a demo.
+
+What makes any of it possible is the same thing throughout: **an output verified against reality is the only ground truth in the building.** Everything else here is a read of it.
 
 ## Qwen + Alibaba Cloud (backend dependency, not decoration)
 
@@ -180,7 +275,14 @@ Helicon's wedge is three things none of them have:
 2. **The ruling BINDS.** It compiles into `GOLDEN_RULES` the agent reads before it writes, and `helicon guard` blocks a ruled-wrong value at write time (Hero 2). Enforced, not advisory.
 3. **Never-twice / re-alarm.** A ruled-wrong value re-alarms the instant it returns in newer memory, at audit time *and* write time. Recency cannot overturn a ruling. Mem0/Zep would silently accept the re-assertion (Hero 1, phase 4).
 
-And the framing that disarms "yet another store": Helicon runs **on** Mem0 (read-only), Alibaba's own recommended Qwen memory backend. It is not a competitor to the store the judges' stack recommends. It is the exam that store never runs on itself.
+And the framing that disarms "yet another store": Helicon runs **on** Mem0 (read-only), Alibaba's own recommended Qwen memory backend. Alibaba's Model Studio docs recommend Mem0 (with AnalyticDB) for Qwen agents; Mem0 stores and retrieves, and its docs never mention contradiction, decay, or a fork in what an entity *is*. Helicon is not a competitor to the store the judges' stack recommends. It is the exam that store never runs on itself.
+
+```bash
+MEM0_API_KEY=m0-... python3 scripts/demo_mem0_audit.py   # audits YOUR real Mem0 store, read-only
+python3 scripts/demo_mem0_audit.py --mock                # synthetic fixture, no account needed
+```
+
+**On `--mock`, stated plainly rather than left for a judge to notice:** the bundled store is *invented* (an "Aurora" defined two ways). It exists so the mechanism is legible in thirty seconds without a Mem0 account, and for no other reason. It is a fixture, not a result, and it is not the hero of this submission. Hero 1 is the same mechanism on a real store with real memories, which is the only version that proves anything. This repo's rule is zero fake data, and a synthetic fixture that is labelled is not a violation of it; a synthetic fixture presented as a finding would be.
 
 One result that proves LLM-judged contradiction is not enough: in the model bake-off, **every model (Qwen, Claude, GPT) missed unit-drift** (points counted as dollars). A class of rot only a deterministic exam catches, never an LLM judge grading its own context.
 
@@ -188,8 +290,8 @@ One result that proves LLM-judged contradiction is not enough: in the model bake
 
 - **Technical + engineering innovation (30%):** a closed evaluate→attribute→rule→law loop over memory, a deterministic 12-class exam, Qwen-judged contradiction, and a write-time guard that binds rulings. All read-only on the source store.
 - **Creative AI implementation + architecture (30%):** the thesis is to evaluate memory by its output, not in isolation, with human rulings that compile into obeyed, write-time-enforced law. Nobody ships that.
-- **Real-world relevance + market (25%):** runs on a real store of **7,529 memories (3,925 live, 3,604 retired)** across ~15 live projects, scanned from Claude Code, git, Obsidian and agent skill files; the store grows on every scan, so `helicon doctor` prints today's count rather than this one. The field (Mem0's own 2026 report; Memora's "64% of errors = failure to forget") now agrees memory maintenance is the bottleneck, and the surviving gap is real in-the-wild data with a human-labeled key, which is exactly what this is.
-- **Presentation + docs (15%):** this architecture, a sub-3-min demo, and two one-command hero demos (`demo_mem0_audit.py --mock`, `helicon guard`).
+- **Real-world relevance + market (25%):** runs on a real store of **~7,800 memories (~4,200 live) as of 2026-07-17** across ~15 live projects, scanned from Claude Code, git, Obsidian and agent skill files; the store grows on every scan, so `helicon doctor` prints today's count rather than this one. The field (Mem0's own 2026 report; Memora's "64% of errors = failure to forget") now agrees memory maintenance is the bottleneck, and the surviving gap is real in-the-wild data with a human-labeled key, which is exactly what this is.
+- **Presentation + docs (15%):** this architecture, a sub-3-min demo, and hero demos that are one command each and run on real data (`helicon audit --judge`, `helicon resolve 355`, `helicon guard`, `helicon move`, `helicon review --terminals`).
 
 ---
 

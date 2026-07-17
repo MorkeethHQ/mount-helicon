@@ -1,4 +1,4 @@
-# Mount Helicon — Qwen Cloud Global AI Hackathon (Track: MemoryAgent)
+# Mount Helicon: Qwen Cloud Global AI Hackathon (Track: MemoryAgent)
 
 **Deadline:** Jul 20, 2026, 2:00 PM PDT (verified at the Devpost source Jul 16; the "Jul 8" on early posts was the original date, extended). **Prize:** $7K cash + $3K Alibaba Cloud credits per track. **Video:** under 3 minutes.
 
@@ -6,7 +6,7 @@ Mount Helicon is the **exam a memory store never runs on itself**: it audits a l
 
 ---
 
-## Hero 1 — audit Alibaba's own recommended Qwen memory backend (one command, zero setup)
+## Hero 1: audit Alibaba's own recommended Qwen memory backend (one command, zero setup)
 
 Alibaba's Model Studio docs recommend **Mem0** (with AnalyticDB) as the memory backend for Qwen agents. Mem0 stores and retrieves; its docs never mention contradiction, decay, or a fork in what an entity *is*. Helicon reads a Mem0 store **read-only** (via the shipped `mem0` connector) and runs the rot exam on it:
 
@@ -24,7 +24,7 @@ Four phases, end to end:
 
 That fourth phase is the whole thesis in one screen: **a memory store can represent SUPERSEDED (recency wins); it cannot represent FALSE-and-stays-false.** Helicon can.
 
-## Hero 2 — the ruling BINDS at write time (guard)
+## Hero 2: the ruling BINDS at write time (guard)
 
 A ruling that only lives in a file is advisory. Helicon enforces it. A human already ruled `hackathon wins = 9` (finding #281); the value `4` was ruled wrong and set to re-alarm. So:
 
@@ -84,7 +84,7 @@ Mount Helicon closes that loop: it evaluates memory by its output, attributes a 
 | **Rule** | Human settles it, once | `helicon resolve <id>` | solid |
 | **Law** | The agent obeys it next session | `helicon policy --inject` → `GOLDEN_RULES.md`, enforced at write time by `helicon guard` | wired |
 
-Same evaluators point at the other producers of agent behavior: **skills** (`connectors/skills.py`), **routines/crons** (`stackwatch.py`), and the **regret** signal (`regret.py`) — killed memory the output later needed back.
+Same evaluators point at the other producers of agent behavior: **skills** (`connectors/skills.py`), **routines/crons** (`stackwatch.py`), and the **regret** signal (`regret.py`), which tracks killed memory the output later needed back.
 
 ## Qwen + Alibaba Cloud (backend dependency, not decoration)
 
@@ -152,7 +152,7 @@ Two of the 13 benchmark tasks (`Bagel agent deployment and operations`, `Content
 
 This is the thesis pointed at its own author. The exam returns **red on the store of the person who wrote it**, and the red is specific enough to fix.
 
-The retrieval-regression number has a history worth telling: on 2026-07-15 it read **12 of 13 regressed**, and it was wrong — `regressed` meant "anything changed at all", so it counted the loop *working* as a failure (16 of 17 missing baseline memories were missing because Helicon had correctly killed them as rot, and a better memory took each vacated slot). A regression is now only what it should always have been: a memory still live and no longer retrieved. 12 → 1. The same day the exam also could not reproduce its own verdict (11/12/11 across three runs) because retrieval called a non-deterministic remote reranker; fixed with stable tie-breaks and a memoized rerank (reproducible answer, honestly not a deterministic model).
+The retrieval-regression number has a history worth telling: on 2026-07-15 it read **12 of 13 regressed**, and it was wrong. `regressed` meant "anything changed at all", so it counted the loop *working* as a failure (16 of 17 missing baseline memories were missing because Helicon had correctly killed them as rot, and a better memory took each vacated slot). A regression is now only what it should always have been: a memory still live and no longer retrieved. 12 → 1. The same day the exam also could not reproduce its own verdict (11/12/11 across three runs) because retrieval called a non-deterministic remote reranker; fixed with stable tie-breaks and a memoized rerank (reproducible answer, honestly not a deterministic model).
 
 An earlier draft of this section claimed that number had reached **0 of 13** and that "the 0 is real." It is not, and the correction belongs in the document rather than in a git history nobody reads. It currently reads **1**, and `data/watch.log` shows it flipping across the last three scheduled scans:
 
@@ -166,31 +166,31 @@ The single regression is task `Search` dropping `Created: search.py` and gaining
 
 The remaining 8 conflicts are the claim selector, and some are the same both-poles shape `GOLDEN_RULES` already carries dismissals for. Named here rather than discovered by a judge.
 
-## Differentiation — why this is not another memory agent
+## Differentiation: why this is not another memory agent
 
 The field the judges will see most of: **Mem0, Zep/Graphiti, Cognee.** They are memory *stores* with automatic contradiction handling. That automatic resolution is exactly the gap.
 
 - **Mem0** stores/retrieves; add/update/delete is an LLM decision at write. Contradiction = the LLM chooses to replace. No human authority, no binding, no re-alarm.
-- **Zep / Graphiti** ship a bi-temporal knowledge graph; a contradicted edge gets a `t_invalid` and recency wins. That represents **SUPERSEDED**, never **FALSE** — the same wrong value can win again the next time it's asserted more recently.
+- **Zep / Graphiti** ship a bi-temporal knowledge graph; a contradicted edge gets a `t_invalid` and recency wins. That represents **SUPERSEDED**, never **FALSE**. The same wrong value can win again the next time it's asserted more recently.
 - **Cognee** reweights by popularity; **Anthropic's memory tool** is LRU; **OpenAI** ships "treat memories as guidance only." None can say *"a human decided this, and it stays decided."*
 
 Helicon's wedge is three things none of them have:
 
-1. **Human ruling is the authority, not an LLM guess.** Ground truth = the operator's verdict, stored with provenance. The way individuals have historically broken open this space is "construct independent ground truth, then catch a model lying" — here the operator *is* the oracle, and the ruling is the held-out key.
+1. **Human ruling is the authority, not an LLM guess.** Ground truth = the operator's verdict, stored with provenance. The way individuals have historically broken open this space is "construct independent ground truth, then catch a model lying". Here the operator *is* the oracle, and the ruling is the held-out key.
 2. **The ruling BINDS.** It compiles into `GOLDEN_RULES` the agent reads before it writes, and `helicon guard` blocks a ruled-wrong value at write time (Hero 2). Enforced, not advisory.
-3. **Never-twice / re-alarm.** A ruled-wrong value re-alarms the instant it returns in newer memory — at audit time *and* write time. Recency cannot overturn a ruling. Mem0/Zep would silently accept the re-assertion (Hero 1, phase 4).
+3. **Never-twice / re-alarm.** A ruled-wrong value re-alarms the instant it returns in newer memory, at audit time *and* write time. Recency cannot overturn a ruling. Mem0/Zep would silently accept the re-assertion (Hero 1, phase 4).
 
-And the framing that disarms "yet another store": Helicon runs **on** Mem0 (read-only), Alibaba's own recommended Qwen memory backend. It is not a competitor to the store the judges' stack recommends — it is the exam that store never runs on itself.
+And the framing that disarms "yet another store": Helicon runs **on** Mem0 (read-only), Alibaba's own recommended Qwen memory backend. It is not a competitor to the store the judges' stack recommends. It is the exam that store never runs on itself.
 
-One result that proves LLM-judged contradiction is not enough: in the model bake-off, **every model — Qwen, Claude, GPT — missed unit-drift** (points counted as dollars). A class of rot only a deterministic exam catches, never an LLM judge grading its own context.
+One result that proves LLM-judged contradiction is not enough: in the model bake-off, **every model (Qwen, Claude, GPT) missed unit-drift** (points counted as dollars). A class of rot only a deterministic exam catches, never an LLM judge grading its own context.
 
 ## How the loop answers the judging criteria
 
-- **Technical + engineering innovation (30%)** — a closed evaluate→attribute→rule→law loop over memory, a deterministic 12-class exam, Qwen-judged contradiction, and a write-time guard that binds rulings. All read-only on the source store.
-- **Creative AI implementation + architecture (30%)** — the thesis: evaluate memory by its output, not in isolation, with human rulings that compile into obeyed, write-time-enforced law. Nobody ships that.
-- **Real-world relevance + market (25%)** — runs on a real store of **7,529 memories (3,925 live, 3,604 retired)** across ~15 live projects, scanned from Claude Code, git, Obsidian and agent skill files; the store grows on every scan, so `helicon doctor` prints today's count rather than this one. The field (Mem0's own 2026 report; Memora's "64% of errors = failure to forget") now agrees memory maintenance is the bottleneck — and the surviving gap is real in-the-wild data with a human-labeled key, which is exactly what this is.
-- **Presentation + docs (15%)** — this architecture, a sub-3-min demo, and two one-command hero demos (`demo_mem0_audit.py --mock`, `helicon guard`).
+- **Technical + engineering innovation (30%):** a closed evaluate→attribute→rule→law loop over memory, a deterministic 12-class exam, Qwen-judged contradiction, and a write-time guard that binds rulings. All read-only on the source store.
+- **Creative AI implementation + architecture (30%):** the thesis is to evaluate memory by its output, not in isolation, with human rulings that compile into obeyed, write-time-enforced law. Nobody ships that.
+- **Real-world relevance + market (25%):** runs on a real store of **7,529 memories (3,925 live, 3,604 retired)** across ~15 live projects, scanned from Claude Code, git, Obsidian and agent skill files; the store grows on every scan, so `helicon doctor` prints today's count rather than this one. The field (Mem0's own 2026 report; Memora's "64% of errors = failure to forget") now agrees memory maintenance is the bottleneck, and the surviving gap is real in-the-wild data with a human-labeled key, which is exactly what this is.
+- **Presentation + docs (15%):** this architecture, a sub-3-min demo, and two one-command hero demos (`demo_mem0_audit.py --mock`, `helicon guard`).
 
 ---
 
-> **DRAFT (voice pass pending — Oscar to flavor):** the demo narration, the exact spoken hero lines, and any first-person "my system failing my own threshold" phrasing are placeholders. Numbers above are live as of the last `helicon report`; re-run before recording.
+> **DRAFT (voice pass pending, Oscar to flavor):** the demo narration, the exact spoken hero lines, and any first-person "my system failing my own threshold" phrasing are placeholders. Numbers above are live as of the last `helicon report`; re-run before recording.

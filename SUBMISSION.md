@@ -189,9 +189,9 @@ What makes any of it possible is the same thing throughout: **an output verified
 
 | File | Alibaba Cloud service | What it does |
 |---|---|---|
-| [`helicon/qwen.py`](https://github.com/MorkeethHQ/mount-helicon/blob/extra-mile/helicon-2026-07-16/helicon/qwen.py#L28-L36) | **Model Studio / MaaS** (`dashscope-intl.aliyuncs.com`, `token-plan.ap-southeast-1.maas.aliyuncs.com`) | Builds the Qwen client and drives every LLM call (`qwen3.6-flash` / `qwen3.6-plus` / `qwen3.7-max`) via the OpenAI-compatible SDK, with tier routing and a token-cost log |
-| [`helicon/embeddings.py`](https://github.com/MorkeethHQ/mount-helicon/blob/extra-mile/helicon-2026-07-16/helicon/embeddings.py#L81-L118) | **DashScope** (`text-embedding-v4`, 1024-dim) | `_embed_provider()` / `embed_batch()`: the whole retrieval stack is Qwen-native. 4,214 memories embedded on DashScope, hybrid-searched against FTS5 |
-| [`fc/s.yaml`](https://github.com/MorkeethHQ/mount-helicon/blob/extra-mile/helicon-2026-07-16/fc/s.yaml) + [`fc/Dockerfile`](https://github.com/MorkeethHQ/mount-helicon/blob/extra-mile/helicon-2026-07-16/fc/Dockerfile) | **Function Compute** (Serverless Devs) | Container deploy of the read-only FastAPI dashboard/API |
+| [`helicon/qwen.py`](https://github.com/MorkeethHQ/mount-helicon/blob/main/helicon/qwen.py#L28-L36) | **Model Studio / MaaS** (`dashscope-intl.aliyuncs.com`, `token-plan.ap-southeast-1.maas.aliyuncs.com`) | Builds the Qwen client and drives every LLM call (`qwen3.6-flash` / `qwen3.6-plus` / `qwen3.7-max`) via the OpenAI-compatible SDK, with tier routing and a token-cost log |
+| [`helicon/embeddings.py`](https://github.com/MorkeethHQ/mount-helicon/blob/main/helicon/embeddings.py#L81-L118) | **DashScope** (`text-embedding-v4`, 1024-dim) | `_embed_provider()` / `embed_batch()`: the whole retrieval stack is Qwen-native. 4,214 memories embedded on DashScope, hybrid-searched against FTS5 |
+| [`fc/s.yaml`](https://github.com/MorkeethHQ/mount-helicon/blob/main/fc/s.yaml) + [`fc/Dockerfile`](https://github.com/MorkeethHQ/mount-helicon/blob/main/fc/Dockerfile) | **Function Compute** (Serverless Devs) | Container deploy of the read-only FastAPI dashboard/API |
 
 Verify the dependency in one line, no reading required:
 
@@ -295,4 +295,59 @@ One result that proves LLM-judged contradiction is not enough: in the model bake
 
 ---
 
-> **DRAFT (voice pass pending, Oscar to flavor):** the demo narration, the exact spoken hero lines, and any first-person "my system failing my own threshold" phrasing are placeholders. Numbers above are live as of the last `helicon report`; re-run before recording.
+## Demo video narration (draft — Oscar to flavor)
+
+> **DRAFT, voice pass pending.** Spoken lines are a scaffold, not final phrasing; the
+> first-person "my own system failing my own threshold" beats are yours to voice.
+> **Before recording: `set -a && source .env && set +a && helicon report --llm` and
+> read whatever verdict it prints.** The numbers below drift between runs (last full
+> exam: DEGRADED, 3 healthy / 9 degraded / 1 broken, grounding 0.538, P@3 0.615), so
+> speak the live number, never a memorized one. The verdict that matters is the word
+> DEGRADED, and it has held every run. **Never say "0 broken."** ~3 min, hard cap 3:00.
+
+**Cold open (0:00–0:20) — the system blocking its own drift, on camera.**
+Terminal, live. Type `helicon guard "4 hackathon wins"`. It prints `BLOCKED — ruling #281`.
+Line: *"This is my memory system refusing to let me state a number about myself that a
+human already ruled wrong. Nine wins, not four. It re-alarms every time the wrong value
+comes back. Let me show you why a store needs this."*
+
+**What it is (0:20–0:40).** *"Mount Helicon is the exam a memory store never runs on
+itself. It audits a live memory for rot, checks what an agent claimed against reality,
+lets me rule a contradiction once, and compiles that ruling into law the agent obeys
+before it writes. Everything you'll see runs on my real store: roughly 7,800 memories
+from real Claude Code transcripts, a real Obsidian vault, real git history."*
+
+**Hero 1 — the one real fork (0:40–1:20).** Run `helicon audit --judge`. *"Cosine
+similarity flags four forked definitions in my own memory. Only one is real. The real
+fork sits thirteen thousandths away from a false alarm, and no threshold recovers that,
+because contradiction is a logical relation, not a distance. Qwen reads all three
+correctly."* Run `helicon resolve 355`. *"A Claude Code session and an Obsidian doc
+disagree about what my own project is. Neither tool can see the other. I rule it once."*
+
+**Hero 2 — the ruling binds (1:20–1:45).** Back to the cold-open guard, now framed:
+*"That ruling compiled into GOLDEN_RULES, the file the agent reads before it writes. A
+store can say SUPERSEDED, recency wins. It cannot say FALSE and stays false. Helicon can,
+because a human said so and a ruling is not a memory that decays."*
+
+**Output stage — published is not true (1:45–2:20).** Run `helicon review --terminals`.
+*"Every memory tool grades memory against itself. This one grades it against reality. An
+agent on my board said 'shipped.' Git says fifteen commits never left the laptop. Caught
+live, by a check that asked no model's opinion."*
+
+**Honesty beat (2:20–2:45) — the red on my own store.** Run `helicon report --llm`.
+*"Here's the part most demos hide. Pointed at my own store, my own exam returns
+DEGRADED. [Read the live split.] Grounding is under-strength, there are open cross-source
+conflicts, and file-edit exhaust still outranks live memory. A system that reports its
+own degradation is the product. One that hides it behind a green light is just another
+benchmark. The red is specific enough to fix, and I name every piece of it in the doc."*
+
+**Close (2:45–3:00) — live on Alibaba Cloud.** Cut to the browser on the FC URL,
+`/api/health` returning `{"status":"ok"}`, then the dashboard. *"Running on Alibaba
+Function Compute, judged by Qwen on Model Studio, embedded on DashScope. Verify. Then
+move it, because verified memory is the only memory you can safely port."*
+
+**Shot list:** (1) guard BLOCKED on 4-wins — the hero, open AND close on it; (2)
+`audit --judge` + `resolve 355`; (3) `review --terminals` contradiction line; (4)
+`report --llm` DEGRADED verdict, live; (5) the FC URL in the browser. Screen-record the
+terminal at a legible font size; the FC URL is the only shot that needs the deploy done
+(Cloud Shell Web Preview works as a fallback — see `fc/DEPLOY-READY.md`).

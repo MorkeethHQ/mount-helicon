@@ -1,5 +1,10 @@
 # Mount Helicon — 3-Minute Demo (dashboard walkthrough + spoken script)
 
+> **CANONICAL golden-demo script is [`GOLDEN_SUBMISSION.md`](GOLDEN_SUBMISSION.md)** —
+> the one-command `helicon demo` flow on the seeded store (no key, no personal data).
+> This file is the longer walkthrough on a real/populated board; use it for the video
+> voiceover, but the judge's reproducible path is the golden submission's.
+
 **North star:** the verifier with a memory.
 **Punchline (everything builds to it):** *A store forgets it ever asked. Helicon remembers what you ruled.*
 **Format:** the **dashboard** (`helicon serve`, browser full-screen), on the author's real store (~8,000 memories, ~3,900 live). Zero fake data — every finding on screen is real rot in a real two-year memory board.

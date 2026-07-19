@@ -163,13 +163,13 @@ $ helicon move --from ~/.claude/CLAUDE.md --to cursor
 
 Point it at your own `CLAUDE.md`, `AGENTS.md`, or `.cursorrules`; it reads what you already have. Run it against **this repo's own** `CLAUDE.md` and it holds back Helicon's own stale stats (`~3,800 live memories of ~6,900 total`, `Composite: ~67 (as of 2026-07-13)`) because a fact with a timestamp in it is a fact with a shelf life. The tool refuses to carry its own drift across the border. `--verify-contradictions` adds the Qwen judge (the same one from Hero 1) so an item that contradicts an already-moved item is held too.
 
-**(3) and (4) are reads of the eval store, not new capabilities.** Once agent output is verified against reality, "which model should I trust" is a ranked query over outcomes you already have:
+**(3) and (4) are reads of the eval store — deliberately NOT a prescriptive router.** Once agent output is verified against reality, "which model should I trust" becomes a ranked query over outcomes you already have. But today's evidence is thin and confounded (claim-level not task-level; model attributed from git trailers; no task-class control), so Helicon **withholds a route below a quality floor** rather than dressing a coin-flip as a recommendation. Prescriptive routing is the next loop (see the TaskRun/ContextPacket design); it is not claimed as working here:
 
 ```
 $ helicon route
-  ▸ testing:  route to Opus 4.8 [claude-code]   verified 5/6 · Wilson LB 0.436
-  ▸ api-surface:  leaning Opus 4.8 (verified 2/2) — provisional, n<5, not a firm route
-                  need 3 more sample(s) to confirm
+  ▸ testing:      no model clears the quality floor yet — best Opus 4.8, verified 5/6,
+                  Wilson LB 0.436 (< 0.50). No route emitted.
+  ▸ api-surface:  insufficient evidence (n=2, need >=5) — no route
 
 $ helicon runs                      # score = verified yield / cost - damage
   when              sess     out      dur   verified   score

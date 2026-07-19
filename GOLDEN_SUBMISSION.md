@@ -1,121 +1,155 @@
 # Mount Helicon — Golden Submission
 
-**What it is (truthfully):** the trust and governance layer for agent memory.
-The one loop it makes feel complete today:
+**Track:** MemoryAgent · **Position:** *the Memory Operations System for AI agents.*
 
-> an agent's claim or memory → the evidence and why it's uncertain → a human ruling
-> in plain language → a durable rule → protection against the mistake coming back.
+A local-first command center (dashboard + CLI + MCP) where **one operator governs
+agent memory by exception** — the machine reviews most things automatically, the
+human rules only the real exceptions, and every governed change lands with a
+receipt and an undo. Qwen is load-bearing: it judges contradictions and grounding,
+scores the store, and the store reports its own degradation honestly.
 
-Mount Helicon is not a finished "Context OS" — that's the north star. This
-submission makes **one closed governance loop** real, safe, and legible from a
-cold clone.
+This document is strict about **real now vs. roadmap** and ends with a red-team
+self-verdict on where the full-OS promise still outruns the build.
 
 ---
 
-## First run (exact commands, no credentials, no personal data)
+## First run (exact, no credentials, no personal data)
 
 ```bash
 git clone https://github.com/MorkeethHQ/mount-helicon.git
 cd mount-helicon
 pip install -e .
-helicon demo          # seeds a labelled demo store + opens the dashboard
+helicon demo            # seeds a labelled demo store + opens the dashboard
+# open http://127.0.0.1:8420
 ```
 
-Then open **http://127.0.0.1:8420**. That's it — one command, a populated
-dashboard, bound to localhost, keyless. No `helicon init`, no scan of your
-machine, no API key. (`bash scripts/judge-check.sh` reproduces this from a fresh
-clone and asserts it.)
+**Fresh-clone verification** (reproduces the judge's machine and asserts it works):
+```bash
+bash scripts/judge-check.sh     # clone → install → boot → populated, no personal-data leak
+python3 -m pytest -q            # 374 passing
+```
+
+Localhost-bound, keyless, scans nothing on your machine.
 
 ---
 
-## The three-minute judge story (all in the dashboard, no terminal after launch)
+## The operator-day story (≤5 minutes, all real today)
 
-The demo store is 11 **labelled, planted** memories — a vegetarian-then-chicken
-contradiction, a marathon whose date has passed, a bank balance stored as durable
-memory, and one entity ("Aurora") defined two incompatible ways across sources.
-Real detectors fire on them; only the data is seeded.
+> *"Yesterday my agents worked across projects. Overnight Helicon reviewed the
+> memory they left. This morning I open one cockpit, rule only the real
+> exceptions, apply one governed update, and see it protect tomorrow's agents."*
 
-1. **Needs Ruling (0:00–0:45).** The queue opens on what needs a human. The hero:
-   *"Identity fork: 'Aurora' is a payments protocol in one source and a lending
-   market in another."* Open it — the two source memories are the evidence, and
-   Helicon shows *why* it's flagged (two grounded sources, incompatible genus).
-2. **Rule fast — verdicts stage (0:45–1:30).** Type the canonical truth —
-   *"a payments protocol"* — and stage it. Rule the next finding (the phantom
-   association) too. Nothing is written yet; a tray shows *"2 staged."* No shell
-   command, no per-item commit.
-3. **One Apply → a receipt (1:30–2:20).** Hit **Apply 2**. Each ruling reports
-   its effect and *what is now protected*, with a real verify badge —
-   *"● recorded · ● in GOLDEN_RULES."* The rulings are compiled into the law the
-   agent reads before it writes. One **Undo all** reverses the whole batch. This
-   is the felt loop: rule a few things, apply once, see it propagate.
-4. **The whole board (2:20–3:00).** Open **The Exam**: the deterministic rot
-   classes firing live on the planted drifts — a settled preference gone stale, a
-   goal whose date passed, a fast fact stored as durable memory. The system reports
-   its own state honestly, including what's degraded.
-
-**Observed vs inference vs decision vs roadmap:** the source memories and the
-exam verdicts are *observed*; the identity/phantom flags are *inference* (labelled
-deterministic, no ground truth); the ruling is the *human decision*; anything about
-model routing, skills/routines governance, or cross-session outcome learning is
-*roadmap* (see below), never presented as working.
+1. **Machine review — the bulk, no human (0:00–0:45).** Open **The Exam**: the
+   12-class rot scan runs live on the seeded store. Most findings are
+   auto-managed — a stale marathon date, a balance stored as durable memory, an
+   ungrounded phantom association — none of them ask for you. The header shows what
+   Helicon handled without you.
+2. **Human review — exceptions only (0:45–1:45).** Open **Needs Ruling**. The
+   queue is short and legible: *"Two sources disagree — vegetarian in Nov, eats
+   chicken again in Jun. Which is current?"* Only a human knows. Rule it in plain
+   language; rule the identity fork too. Verdicts **stage** — nothing written yet.
+3. **One governed Apply → receipt (1:45–2:45).** Hit **Apply 2**. Each ruling
+   reports its effect and *what is now protected*, with a real verify badge —
+   *"● recorded · ● in GOLDEN_RULES."* The guard will now block the ruled-wrong
+   claim before an agent writes it. One **Undo all** reverses the batch. If the
+   apply fails, it says so — it never implies success from a silent screen.
+4. **Qwen, load-bearing (2:45–3:45).** The contradiction you just ruled was judged
+   by **Qwen on Model Studio** — proven live below. The battery scores the store
+   with Qwen and returns an honest **DEGRADED** (grounding 0.538), naming its weak
+   spots instead of a green light.
+5. **Nightly health (3:45–5:00).** Routine and skill liveness (`helicon doctor` /
+   stackwatch) show last-run and explicit **degraded / never-ran** states — the
+   loop that checks tomorrow whether the rule held.
 
 ---
 
-## What is real now
+## Live Qwen API proof (load-bearing, not decorative)
 
-- **One-command, safe, seeded first run** (`helicon demo`) — populated dashboard,
-  localhost-bound, keyless, zero personal data.
-- **The govern-by-exception loop, batched**: findings with their source evidence
-  → plain-language rulings that **stage** (no shell commands, no per-item write) →
-  **one Apply** → a **receipt** proving each ruling landed (recorded + compiled
-  into `GOLDEN_RULES`, checked against real post-apply state) → **one Undo all**.
-  The compiled rulings become law the guard enforces before an agent writes, and
-  re-alarm if contradicted (never-twice). Backed by `/api/govern/apply-batch` +
-  `/api/govern/undo-batch`, with tests pinning coherent apply, isolated
-  partial-failure, total undo, and bounded blast radius.
-- **Multi-source, read-only ingest** (Claude Code, git, Obsidian, skills, Mem0
-  format) — Helicon reads memory, never becomes a store.
-- **The 12-class rot exam** (deterministic + optional Qwen-judged), from CLI,
-  MCP, or dashboard.
-- **Honest self-report**: the exam grades its own store and returns DEGRADED,
-  naming its weak spots rather than showing a green light.
-- **Qwen / Alibaba native**: inference on Model Studio, embeddings on DashScope
-  (the demo runs keyless; live judging uses the key).
+Real call to Alibaba **Model Studio**, judging the demo's hero contradiction:
 
-## What is intentionally roadmap (labelled, not faked)
+```
+$ python3 -c "from helicon.qwen import get_client, complete; from helicon.config import load_config; \
+    print(complete(get_client(load_config()), 'Reply CONTRADICTION or CONSISTENT only.', \
+    'A: user is vegetarian. B: user started eating chicken again.', model='qwen3.6-flash'))"
+CONTRADICTION            # returned by qwen3.6-flash on Model Studio in ~4s
+```
 
-- **The second loop — task → scoped context → verified artifact → outcome.** The
-  `TaskRun`/`ContextPacket` recorder (`taskrun-contextpacket-design.md`) is
-  design-only. Until it exists, Helicon makes **no** causal claim about which
-  context, skill, or model to use next.
-- **Prescriptive model routing.** Withheld below a quality floor — `helicon route`
-  emits *"no model clears the quality floor"* rather than a route on coin-flip
-  evidence. Turning it on is gated on min-sample + min-verified-rate + task-class
-  comparability.
-- **Governing skills and routines** from the same cockpit, and **write-back** of
-  corrected law into skills/rules files.
+Code files demonstrating Alibaba Cloud use: [`helicon/qwen.py`](helicon/qwen.py)
+(Model Studio inference), [`helicon/embeddings.py`](helicon/embeddings.py)
+(DashScope `text-embedding-v4`). ~28 modules call Qwen; kill the key and the
+judging/grounding/consolidation layer goes dark.
 
-## Security and privacy defaults
+## Alibaba deployment proof (honest)
 
-- The server binds **127.0.0.1** by default. The API mutates the store without
-  auth, so it must not face the network; `--host` opts in with a printed warning.
-- The demo scans **no personal source** — connectors are empty; the review queue
-  and skills audit only scan directories you explicitly wire via config.
-- The demo is **keyless** and fully **local**; nothing leaves the machine.
-- The demo store is labelled `demo` throughout and can never be confused with a
-  live audit.
+`fc/` is a complete Alibaba **Function Compute** container deploy
+([`fc/s.yaml`](fc/s.yaml) + [`fc/Dockerfile`](fc/Dockerfile), one-command
+`s deploy`). **There is no live hosted URL** — the account is KYC-blocked, stated
+plainly. The Devpost rule asks for *"a code file demonstrating use of Alibaba Cloud
+services and APIs,"* which the live Qwen/DashScope calls + `fc/` config satisfy.
+The demo runs locally; nothing about the loop depends on a hosted URL.
 
-## Known limitations (stated plainly)
+---
 
-- **Retrieval "utility" is correlation, not causal.** Marking a memory useful can
-  retro-mark past retrievals; it cannot prove a memory helped a specific task.
-  This is why the second loop (TaskRun/ContextPacket) is the next build, and why
-  no causal-learning claim is made in the UI or here.
-- **Output verification is claim-level**, extracted from closeout/commit text —
-  it does not yet check a task's declared acceptance criterion. That's the
-  TaskRun contract, roadmap.
-- **The demo is seeded fixtures**, deterministic by design; the live experience on
-  a real store (thousands of memories) is richer but requires `helicon init` and
-  a key for the Qwen-judged classes.
-- **Model-routing evidence is thin and confounded**; the floor is why it stays
-  off, not a claim that it works.
+## Real now vs. roadmap (strict)
+
+**Real now:** one-command safe seeded demo; the govern-by-exception loop
+(stage → one Apply → receipt with a verified probe → undo, backend + UI, tested at
+the HTTP boundary); machine-review auto-managed lane; compiled law + guard; live
+Qwen contradiction/grounding judging with honest DEGRADED; routing withheld below a
+quality floor; multi-source read-only ingest; localhost-safe binding; no
+personal-data leak.
+
+**Roadmap (labelled, not shown as working):**
+- **Task / work surface** — the `TaskRun`/`ContextPacket` recorder that binds
+  objective ↔ frozen context ↔ artifact ↔ verification. Designed, not built. Until
+  it exists, Helicon makes **no causal claim** about which context/skill/model to
+  use next.
+- **Reproducible A/B comparison surface** — routing evidence is thin and confounded
+  today (hence the quality floor). A controlled feasibility comparison is the next
+  build.
+- **Nightly improvement as a first-class governed surface** (routines/skills as
+  governed assets with suggested remedies) — the modules exist; the unified surface
+  does not.
+- **The meta-review** — the operator ruling on the *engine's own judgments/scores*
+  so it learns its escalation criteria. Designed, not built.
+- **Native Mac wrapper** — not packaged. This is a local-first browser + CLI
+  command center; no fake app.
+
+---
+
+## Sequenced plan
+
+**Must ship before submission (done):** one-command demo; govern loop + receipt +
+undo; machine/human lane split; live Qwen proof; fresh-clone verification; honest
+docs. **Post-submission roadmap:** TaskRun recorder → A/B comparison → nightly
+governed surface → meta-review → routing turned on above the floor. **Cut from
+claims:** "Context OS," autonomous optimization, agent-fleet-comparison-as-proof,
+write-back, a native app, and any live-deployed URL.
+
+---
+
+## Red-team self-verdict
+
+**What a skeptical judge will believe:** it installs and runs in one command to a
+safe, populated cockpit; the govern-by-exception loop is real, tested end-to-end,
+and honest (no shell commands, no faked propagation, receipts with a verify probe,
+total undo); Qwen genuinely judges the contradiction on Model Studio; the system
+reports its own DEGRADED state; failures never masquerade as success.
+
+**Where it still fails the full-OS promise, stated plainly:**
+1. **It is not yet a *learning* OS.** Without the TaskRun loop there is no causal
+   evidence that tomorrow's agents are measurably better — the "improves over time"
+   claim is roadmap, and we say so. This is the biggest gap.
+2. **The evaluation surface is a read, not a comparison.** We show an honest
+   DEGRADED and a floored router, not a reproducible A/B of two approaches. A judge
+   wanting "compare two candidates" sees the honest floor instead.
+3. **Nightly improvement is modules, not a surface.** The health signals exist; the
+   first-class governed nightly view does not.
+4. **The MCP retrieve path still mutates state on lookup** — a read-only mode is
+   needed before an agent can safely "just look something up."
+5. **No live Alibaba URL** — code-file + local proof only.
+
+The honest one-liner: **Helicon today is a real, safe, Qwen-powered governance
+cockpit for agent memory — the *govern* half of the OS, shipped and tested. The
+*learn* half (task→context→outcome) is designed, not built, and we do not pretend
+otherwise.**

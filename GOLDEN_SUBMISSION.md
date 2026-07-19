@@ -43,9 +43,10 @@ bound, keyless, scans nothing on your machine.
 2. **0:15–0:35 — the contradiction + Qwen's verdict.** The store holds "user is
    vegetarian" and "user eats chicken again." Qwen (Model Studio) judges it:
    **CONTRADICTION**. Similarity scores can't; a contradiction judge can.
-3. **0:35–1:05 — rule once → Apply → receipt.** The human rules the current truth;
-   one Apply compiles it into GOLDEN_RULES; the receipt proves it landed
-   (*recorded · in GOLDEN_RULES*), with Undo.
+3. **0:35–1:05 — one tap → applied → receipt.** The human taps the current truth
+   ("eats chicken"); it applies instantly — compiled into GOLDEN_RULES; the receipt
+   proves it landed and is enforced (*recorded · in GOLDEN_RULES · guard now
+   enforces it*), with Undo. One action, not a staging ceremony.
 4. **1:05–1:25 — the guard enforces it.** Show the guard **blocking** the ruled-wrong
    fact before an agent can write it again.
 5. **1:25–1:30 — DEGRADED, not green.** The store grades itself DEGRADED (grounding
@@ -103,8 +104,9 @@ the "running on Alibaba Cloud" proof, not a hosted endpoint.
 
 **Ships today — the governed-memory loop (real, tested):** one-command safe seeded
 demo; machine-review lane that auto-manages routine rot (ungrounded/stale/mechanical
-never ask a human); a human exception queue; **stage → one Apply → receipt with a
-verified probe → undo**; compiled law + a guard that **blocks a ruled-wrong claim**;
+never ask a human); a human exception queue; **one-tap ruling → applied instantly →
+receipt with a verified probe → undo** (one action per exception, no staging
+ceremony); compiled law + a guard that **blocks a ruled-wrong claim**;
 live Qwen contradiction/grounding judging with an honest DEGRADED; routing withheld
 below a quality floor. Failures never masquerade as success (audited + tested).
 

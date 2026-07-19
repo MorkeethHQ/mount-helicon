@@ -183,7 +183,7 @@ What makes any of it possible is the same thing throughout: **an output verified
 
 ## Qwen + Alibaba Cloud (backend dependency, not decoration)
 
-~22 modules call Qwen: contradiction and identity judging, consolidation synthesis, portrait narration, next-move generation, volatility scoring. Embeddings run on Alibaba **DashScope** (`text-embedding-v4`); inference on Alibaba **Model Studio / MaaS** (`token-plan.ap-southeast-1.maas.aliyuncs.com`). Kill the key and half the intelligence layer goes dark. The read-only dashboard/API deploys on Alibaba **Function Compute** for the deployment proof (ECS dropped on KYC).
+~22 modules call Qwen: contradiction and identity judging, consolidation synthesis, portrait narration, next-move generation, volatility scoring. Embeddings run on Alibaba **DashScope** (`text-embedding-v4`); inference on Alibaba **Model Studio / MaaS** (`token-plan.ap-southeast-1.maas.aliyuncs.com`). Kill the key and half the intelligence layer goes dark — that is the live Alibaba dependency, and it runs on every command. The read-only dashboard/API is **container-ready for Alibaba Function Compute** (`fc/s.yaml` + `Dockerfile`, one-command `s deploy`); we ship the deploy config as the proof rather than a hosted URL (ECS dropped on KYC).
 
 **Code files demonstrating use of Alibaba Cloud services and APIs** (the rule asks for a link to a code file, so here are the three that matter):
 
@@ -191,7 +191,7 @@ What makes any of it possible is the same thing throughout: **an output verified
 |---|---|---|
 | [`helicon/qwen.py`](https://github.com/MorkeethHQ/mount-helicon/blob/main/helicon/qwen.py#L28-L36) | **Model Studio / MaaS** (`dashscope-intl.aliyuncs.com`, `token-plan.ap-southeast-1.maas.aliyuncs.com`) | Builds the Qwen client and drives every LLM call (`qwen3.6-flash` / `qwen3.6-plus` / `qwen3.7-max`) via the OpenAI-compatible SDK, with tier routing and a token-cost log |
 | [`helicon/embeddings.py`](https://github.com/MorkeethHQ/mount-helicon/blob/main/helicon/embeddings.py#L81-L118) | **DashScope** (`text-embedding-v4`, 1024-dim) | `_embed_provider()` / `embed_batch()`: the whole retrieval stack is Qwen-native. 4,214 memories embedded on DashScope, hybrid-searched against FTS5 |
-| [`fc/s.yaml`](https://github.com/MorkeethHQ/mount-helicon/blob/main/fc/s.yaml) + [`fc/Dockerfile`](https://github.com/MorkeethHQ/mount-helicon/blob/main/fc/Dockerfile) | **Function Compute** (Serverless Devs) | Container deploy of the read-only FastAPI dashboard/API |
+| [`fc/s.yaml`](https://github.com/MorkeethHQ/mount-helicon/blob/main/fc/s.yaml) + [`fc/Dockerfile`](https://github.com/MorkeethHQ/mount-helicon/blob/main/fc/Dockerfile) | **Function Compute** (Serverless Devs) | Container **deploy config** (`s deploy`) for the read-only FastAPI dashboard/API — the deployable artifact, not a live URL |
 
 Verify the dependency in one line, no reading required:
 
@@ -208,10 +208,10 @@ Run it with `--llm`, which is the **full** exam (all six context tests, not just
 ```
 $ helicon report --llm
 
-Overall: DEGRADED   (battery: 2 healthy / 9 degraded / 2 broken of 13 tasks; last scan 6.0h ago)
+Overall: DEGRADED   (battery: 3 healthy / 9 degraded / 1 broken of 13 tasks; last scan 6.0h ago)
 
 1. Efficient storage & retrieval          HEALTHY
-   P@3 0.692  MRR 0.603  (n=13, small internal benchmark, one label per query)
+   P@3 0.615  MRR 0.596  (n=13, small internal benchmark, one label per query)
    ingest dedup rate 0.997, 17 consolidations
 2. Timely forgetting                      HEALTHY
    decay predicts human kills: rank-AUC 0.781; freshness pass rate 0.846
@@ -341,13 +341,17 @@ conflicts, and file-edit exhaust still outranks live memory. A system that repor
 own degradation is the product. One that hides it behind a green light is just another
 benchmark. The red is specific enough to fix, and I name every piece of it in the doc."*
 
-**Close (2:45–3:00) — live on Alibaba Cloud.** Cut to the browser on the FC URL,
-`/api/health` returning `{"status":"ok"}`, then the dashboard. *"Running on Alibaba
-Function Compute, judged by Qwen on Model Studio, embedded on DashScope. Verify. Then
-move it, because verified memory is the only memory you can safely port."*
+**Close (2:45–3:00) — live on Alibaba Cloud.** Cut to the terminal: run one command
+that fires a real Qwen judgment, then tail the token-cost log so the call to
+`dashscope-intl.aliyuncs.com` lands on screen. *"Every judgment you just watched ran on
+Qwen — Model Studio for inference, DashScope for embeddings. Kill the key and half of
+this goes dark. That's the dependency. Verify it, then move your memory — because verified
+memory is the only memory you can safely port."*
 
-**Shot list:** (1) guard BLOCKED on 4-wins — the hero, open AND close on it; (2)
-`audit --judge` + `resolve 355`; (3) `review --terminals` contradiction line; (4)
-`report --llm` DEGRADED verdict, live; (5) the FC URL in the browser. Screen-record the
-terminal at a legible font size; the FC URL is the only shot that needs the deploy done
-(Cloud Shell Web Preview works as a fallback — see `fc/DEPLOY-READY.md`).
+**Shot list:** (1) guard BLOCKED on a ruled-wrong claim — the hero, open AND close on it;
+(2) `audit --judge` + `resolve`; (3) `review --terminals` contradiction line; (4)
+`report --llm` DEGRADED verdict, live; (5) a live Qwen call landing on DashScope (tail the
+token-cost log). Screen-record the terminal at a legible font size. No hosted URL is
+claimed or shown — the Alibaba proof is the running API calls plus the linked code files
+(`qwen.py`, `embeddings.py`) and the deployable `fc/` config. The full timed 3-minute
+script is in `DEMO-SCRIPT.md`.

@@ -205,7 +205,7 @@ What makes any of it possible is the same thing throughout: **an output verified
 
 ## Qwen + Alibaba Cloud (backend dependency, not decoration)
 
-~22 modules call Qwen: contradiction and identity judging, consolidation synthesis, portrait narration, next-move generation, volatility scoring. Embeddings run on Alibaba **DashScope** (`text-embedding-v4`); inference on Alibaba **Model Studio / MaaS** (`token-plan.ap-southeast-1.maas.aliyuncs.com`). Kill the key and half the intelligence layer goes dark — that is the live Alibaba dependency, and it runs on every command. The read-only dashboard/API is **container-ready for Alibaba Function Compute** (`fc/s.yaml` + `Dockerfile`, one-command `s deploy`); we ship the deploy config as the proof rather than a hosted URL (ECS dropped on KYC).
+~22 modules call Qwen: contradiction and identity judging, consolidation synthesis, portrait narration, next-move generation, volatility scoring. Embeddings run on Alibaba **DashScope** (`text-embedding-v4`); inference on Alibaba **Model Studio / MaaS** (`token-plan.ap-southeast-1.maas.aliyuncs.com`). Kill the key and half the intelligence layer goes dark — that is the live Alibaba dependency, and it runs on every command. The dashboard/API is **deployed and running on Alibaba Cloud ECS (Singapore / ap-southeast-1): http://47.237.3.97:8420** (verified live — `GET /api/health` returns `{"status":"ok",...}`; serves the seeded demo, no personal data), and is also container-ready for Function Compute (`fc/s.yaml` + `Dockerfile`).
 
 **Code files demonstrating use of Alibaba Cloud services and APIs** (the rule asks for a link to a code file, so here are the three that matter):
 
@@ -213,7 +213,7 @@ What makes any of it possible is the same thing throughout: **an output verified
 |---|---|---|
 | [`helicon/qwen.py`](https://github.com/MorkeethHQ/mount-helicon/blob/main/helicon/qwen.py#L28-L36) | **Model Studio / MaaS** (`dashscope-intl.aliyuncs.com`, `token-plan.ap-southeast-1.maas.aliyuncs.com`) | Builds the Qwen client and drives every LLM call (`qwen3.6-flash` / `qwen3.6-plus` / `qwen3.7-max`) via the OpenAI-compatible SDK, with tier routing and a token-cost log |
 | [`helicon/embeddings.py`](https://github.com/MorkeethHQ/mount-helicon/blob/main/helicon/embeddings.py#L81-L118) | **DashScope** (`text-embedding-v4`, 1024-dim) | `_embed_provider()` / `embed_batch()`: the whole retrieval stack is Qwen-native. 4,214 memories embedded on DashScope, hybrid-searched against FTS5 |
-| [`fc/s.yaml`](https://github.com/MorkeethHQ/mount-helicon/blob/main/fc/s.yaml) + [`fc/Dockerfile`](https://github.com/MorkeethHQ/mount-helicon/blob/main/fc/Dockerfile) | **Function Compute** (Serverless Devs) | Container **deploy config** (`s deploy`) for the read-only FastAPI dashboard/API — the deployable artifact, not a live URL |
+| [`scripts/cloudshell-run.sh`](https://github.com/MorkeethHQ/mount-helicon/blob/main/scripts/cloudshell-run.sh) + `fc/s.yaml` | **ECS** (live) + Function Compute (config) | The backend that is **deployed and running on Alibaba Cloud ECS** at **http://47.237.3.97:8420** (Singapore); same boot script, container-ready for FC |
 
 Verify the dependency in one line, no reading required:
 

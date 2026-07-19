@@ -54,10 +54,10 @@ bound, keyless, scans nothing on your machine.
    mistake that would have charged real cards.
 5. **1:25–1:30 — DEGRADED, not green.** The store grades itself DEGRADED (grounding
    0.538): *"it refuses to invent confidence."*
-6. **1:30–2:00 — running on Alibaba Cloud.** Cut to **Alibaba Cloud Shell** running
-   `bash scripts/cloudshell-run.sh` — the same backend serving the dashboard from
-   Alibaba infrastructure. *"Local-first, and it runs on Alibaba Cloud — the judging
-   you just saw is Qwen on Model Studio."*
+6. **1:30–2:00 — running on Alibaba Cloud.** Open **http://47.237.3.97:8420** in the
+   browser — the same dashboard, served live from an **Alibaba Cloud ECS** instance in
+   Singapore. *"It's deployed and running on Alibaba Cloud — and the judging you just
+   saw is Qwen on Model Studio."*
 
 That is the whole proof, in under two minutes. No nightly-health montage, no "OS,"
 no "it learns" — those dilute the governance story that is the point.
@@ -77,29 +77,21 @@ CONTRADICTION            # qwen3.6-flash on Alibaba Model Studio, ~4s
 
 The rule (verbatim): *"You must demonstrate that the backend is running on Alibaba
 Cloud"* and *"Proof must be a link to a code file in their code repo that
-demonstrates use of Alibaba Cloud services and APIs."* Helicon meets both — as a
-**local-first backend that runs anywhere, and has been run in full on Alibaba
-Cloud.**
+demonstrates use of Alibaba Cloud services and APIs."* Helicon meets both.
 
-- **The backend runs on Alibaba Cloud Shell.** [`scripts/cloudshell-run.sh`](scripts/cloudshell-run.sh)
-  boots the full FastAPI backend inside **Alibaba Cloud Shell** (slim mode for the
-  shell's disk; the deterministic exam + governance loop run from the DB). This has
-  been run end-to-end and is captured in the demo video — the backend running on
-  Alibaba Cloud, from the code file the rule asks for.
+- **The backend is deployed and running on Alibaba Cloud ECS — a live public URL:**
+  **http://47.237.3.97:8420** (region **Singapore / ap-southeast-1**). Verified live:
+  `GET /api/health` → `{"status":"ok","memories":11,"cubes":11}`, `GET /` → HTTP 200.
+  It serves the seeded **demo** store (no personal data). Reproducible on any Linux
+  host with [`scripts/cloudshell-run.sh`](scripts/cloudshell-run.sh) (local-first: the
+  same backend runs on the judge's machine, Cloud Shell, or an ECS box).
 - **The load-bearing intelligence runs on Alibaba Cloud on every request.** Every
   contradiction/grounding judgment executes on Alibaba **Model Studio**
   ([`helicon/qwen.py`](helicon/qwen.py)); every embedding on Alibaba **DashScope**
   `text-embedding-v4` ([`helicon/embeddings.py`](helicon/embeddings.py)). Proven
   live (the call above). Kill the Alibaba side and the judging layer goes dark.
-- **Also deployable to Function Compute** ([`fc/s.yaml`](fc/s.yaml) +
+- **Also container-deployable to Function Compute** ([`fc/s.yaml`](fc/s.yaml) +
   [`fc/Dockerfile`](fc/Dockerfile)).
-
-**Honest scope (we never imply what isn't there):** there is **no always-on public
-URL**. A persistent dedicated server (ECS / a standing Function Compute service)
-needs a KYC step that repeatedly failed for this account, so we do not host one — and
-by design don't need to. Local-first means the same backend runs on the judge's
-machine, in Alibaba Cloud Shell, or anywhere a container runs; the Cloud Shell run is
-the "running on Alibaba Cloud" proof, not a hosted endpoint.
 
 ---
 
@@ -150,12 +142,10 @@ learns" while the strongest proof is *governance*. We have cut that language. He
 is the governance and evaluation layer for agent memory. The learn-half exists only
 as a tested, honestly-labelled recorder.
 
-**Where we are still exposed:** (1) no always-on public URL — but the backend *runs
-on Alibaba Cloud Shell* (`scripts/cloudshell-run.sh`), which is the rule's "backend
-running on Alibaba Cloud"; the only exposure is a judge who demands a hosted
-endpoint, and we never fake one; (2) the recorder is provenance, not causal
-evidence, and we say so; (3) verification is operator-**attested**, not Helicon-run —
-the label stays rigorous.
+**Where we are still exposed:** (1) the recorder is provenance, not causal evidence,
+and we say so; (2) verification is operator-**attested**, not Helicon-run — the label
+stays rigorous. (The Alibaba-deployment question is settled: the backend is live on
+Alibaba Cloud ECS at http://47.237.3.97:8420, verified reachable.)
 
 The insight the whole product is built around: **agent memory becomes dangerous not
 when it forgets, but when it confidently preserves something that should no longer be

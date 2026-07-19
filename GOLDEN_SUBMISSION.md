@@ -40,15 +40,18 @@ bound, keyless, scans nothing on your machine.
 
 1. **0:00–0:15 — the thesis.** *"Memory stores remember; Helicon checks whether what
    they remember is still true."*
-2. **0:15–0:35 — the contradiction + Qwen's verdict.** The store holds "user is
-   vegetarian" and "user eats chicken again." Qwen (Model Studio) judges it:
+2. **0:15–0:35 — a DANGEROUS contradiction + Qwen's verdict.** The store holds
+   "Stripe is in test mode — safe to run a checkout" (March) and "we went live on
+   Stripe July 1 — every charge is real money" (July). Believe the stale one and an
+   agent **charges real customers by mistake.** Qwen (Model Studio) judges it:
    **CONTRADICTION**. Similarity scores can't; a contradiction judge can.
-3. **0:35–1:05 — one tap → applied → receipt.** The human taps the current truth
-   ("eats chicken"); it applies instantly — compiled into GOLDEN_RULES; the receipt
-   proves it landed and is enforced (*recorded · in GOLDEN_RULES · guard now
+3. **0:35–1:05 — one tap → applied → receipt.** The human taps the current answer
+   ("live — real money"); it applies instantly — compiled into GOLDEN_RULES; the
+   receipt proves it landed and is enforced (*recorded · in GOLDEN_RULES · guard now
    enforces it*), with Undo. One action, not a staging ceremony.
-4. **1:05–1:25 — the guard enforces it.** Show the guard **blocking** the ruled-wrong
-   fact before an agent can write it again.
+4. **1:05–1:25 — the guard enforces it.** Show the guard **blocking** "Stripe is in
+   test mode, safe to run a checkout" before an agent can act on it — the exact
+   mistake that would have charged real cards.
 5. **1:25–1:30 — DEGRADED, not green.** The store grades itself DEGRADED (grounding
    0.538): *"it refuses to invent confidence."*
 6. **1:30–2:00 — running on Alibaba Cloud.** Cut to **Alibaba Cloud Shell** running
@@ -66,7 +69,7 @@ no "it learns" — those dilute the governance story that is the point.
 ```
 $ python3 -c "from helicon.qwen import get_client, complete; from helicon.config import load_config; \
     print(complete(get_client(load_config()), 'Reply CONTRADICTION or CONSISTENT only.', \
-    'A: user is vegetarian. B: user started eating chicken again.', model='qwen3.6-flash'))"
+    'A: Stripe is in test mode, charges are simulated. B: we went live on Stripe, every charge is real money.', model='qwen3.6-flash'))"
 CONTRADICTION            # qwen3.6-flash on Alibaba Model Studio, ~4s
 ```
 

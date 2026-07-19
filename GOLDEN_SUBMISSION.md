@@ -35,18 +35,20 @@ contradiction, a marathon whose date has passed, a bank balance stored as durabl
 memory, and one entity ("Aurora") defined two incompatible ways across sources.
 Real detectors fire on them; only the data is seeded.
 
-1. **Needs Ruling (0:00–1:00).** The queue opens on what needs a human. The hero:
-   *"Identity fork: 'Aurora' is defined as a payments protocol in one source and a
-   lending market in another."* Open it — the two source memories are the evidence,
-   and Helicon shows *why* it's flagged (two grounded sources, incompatible genus).
-2. **Rule it in plain language (1:00–1:45).** Type the canonical truth —
-   *"a payments protocol"* — and apply. Helicon records the ruling, writes a
-   correction memory, and the fork **clears from the queue**. No shell command.
-3. **See what's protected (1:45–2:30).** Open **Golden Rules**: the ruling is now
-   compiled law the agent reads before it writes, alongside pre-seeded verdicts.
-   The correction is durable — if a future memory re-asserts the losing definition,
-   it re-alarms (never-twice).
-4. **The whole board (2:30–3:00).** Open **The Exam**: the deterministic rot
+1. **Needs Ruling (0:00–0:45).** The queue opens on what needs a human. The hero:
+   *"Identity fork: 'Aurora' is a payments protocol in one source and a lending
+   market in another."* Open it — the two source memories are the evidence, and
+   Helicon shows *why* it's flagged (two grounded sources, incompatible genus).
+2. **Rule fast — verdicts stage (0:45–1:30).** Type the canonical truth —
+   *"a payments protocol"* — and stage it. Rule the next finding (the phantom
+   association) too. Nothing is written yet; a tray shows *"2 staged."* No shell
+   command, no per-item commit.
+3. **One Apply → a receipt (1:30–2:20).** Hit **Apply 2**. Each ruling reports
+   its effect and *what is now protected*, with a real verify badge —
+   *"● recorded · ● in GOLDEN_RULES."* The rulings are compiled into the law the
+   agent reads before it writes. One **Undo all** reverses the whole batch. This
+   is the felt loop: rule a few things, apply once, see it propagate.
+4. **The whole board (2:20–3:00).** Open **The Exam**: the deterministic rot
    classes firing live on the planted drifts — a settled preference gone stale, a
    goal whose date passed, a fast fact stored as durable memory. The system reports
    its own state honestly, including what's degraded.
@@ -63,10 +65,14 @@ model routing, skills/routines governance, or cross-session outcome learning is
 
 - **One-command, safe, seeded first run** (`helicon demo`) — populated dashboard,
   localhost-bound, keyless, zero personal data.
-- **The govern-by-exception loop**: a finding with its source evidence → a
-  plain-language ruling in the UI (no shell commands) → the fork clears → the
-  ruling compiles into `GOLDEN_RULES` → the guard blocks a ruled-wrong claim
-  before an agent writes it → it re-alarms if contradicted again.
+- **The govern-by-exception loop, batched**: findings with their source evidence
+  → plain-language rulings that **stage** (no shell commands, no per-item write) →
+  **one Apply** → a **receipt** proving each ruling landed (recorded + compiled
+  into `GOLDEN_RULES`, checked against real post-apply state) → **one Undo all**.
+  The compiled rulings become law the guard enforces before an agent writes, and
+  re-alarm if contradicted (never-twice). Backed by `/api/govern/apply-batch` +
+  `/api/govern/undo-batch`, with tests pinning coherent apply, isolated
+  partial-failure, total undo, and bounded blast radius.
 - **Multi-source, read-only ingest** (Claude Code, git, Obsidian, skills, Mem0
   format) — Helicon reads memory, never becomes a store.
 - **The 12-class rot exam** (deterministic + optional Qwen-judged), from CLI,
@@ -78,9 +84,6 @@ model routing, skills/routines governance, or cross-session outcome learning is
 
 ## What is intentionally roadmap (labelled, not faked)
 
-- **Batched review + one-Apply receipt.** Today rulings apply per-finding. The
-  staged-batch, single-Apply, propagation-receipt interaction is designed
-  (`governance-batch-design.md`) but not built.
 - **The second loop — task → scoped context → verified artifact → outcome.** The
   `TaskRun`/`ContextPacket` recorder (`taskrun-contextpacket-design.md`) is
   design-only. Until it exists, Helicon makes **no** causal claim about which

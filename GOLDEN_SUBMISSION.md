@@ -52,8 +52,11 @@ bound, keyless, scans nothing on your machine.
 4. **1:05–1:25 — the guard enforces it.** Show the guard **blocking** "Stripe is in
    test mode, safe to run a checkout" before an agent can act on it — the exact
    mistake that would have charged real cards.
-5. **1:25–1:30 — DEGRADED, not green.** The store grades itself DEGRADED (grounding
-   0.538): *"it refuses to invent confidence."*
+5. **1:25–1:30 — DEGRADED, not green.** `helicon battery` on the demo store returns
+   **Verdict: DEGRADED** — the Grounding check *fails* ("the retrieved memories are
+   vague fragments… that do not provide specific, verifiable information"), so it
+   withholds confidence instead of faking a green light. *"It refuses to invent
+   confidence."*
 6. **1:30–2:00 — running on Alibaba Cloud.** Open **http://47.237.3.97:8420** in the
    browser — the same dashboard, served live from an **Alibaba Cloud ECS** instance in
    Singapore. *"It's deployed and running on Alibaba Cloud — and the judging you just

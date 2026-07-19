@@ -1,79 +1,67 @@
-# Mount Helicon — 3-Minute Demo (shot-list + spoken script)
+# Mount Helicon — 3-Minute Demo (dashboard walkthrough + spoken script)
 
 **North star:** the verifier with a memory.
 **Punchline (everything builds to it):** *A store forgets it ever asked. Helicon remembers what you ruled.*
-**Rule:** one on-screen moment per beat. Nothing said that isn't shown. Zero fake data: the opening exam and the closing guard run on the author's real store (~3,900 live memories); the loop in the middle runs on a bundled Mem0-format store, and the voiceover says so.
+**Format:** the **dashboard** (`helicon serve`, browser full-screen), on the author's real store (~8,000 memories, ~3,900 live). Zero fake data — every finding on screen is real rot in a real two-year memory board.
+**Rule:** one surface per beat, nothing said that isn't shown.
 
-> **Every command below is verified working (2026-07-19).** The four beats are four single commands — no manual note-injection, no live URL, nothing fragile to fumble on camera. Numbers move on every scan; read yours off the frozen copy (see HOW TO CAPTURE) and say those.
+> **Record on a disposable COPY** so ruling a finding is repeatable and never touches the live store:
+> ```bash
+> cp data/helicon.db /tmp/record-board.db
+> HELICON_CONFIG=<config with db_path=/tmp/record-board.db> helicon serve --port 8421
+> # open http://localhost:8421 in the browser, full-screen, dark theme
+> ```
+> Numbers move on every scan — read the exam's rot count off your own screen and say that, not the number below.
 
-**Total: 4 beats, ~3:00. VO ≈ 420 words (~145 wpm, leaves room for the pauses).**
-
----
-
-## THE SPINE — four commands, verified
-
-```
-helicon audit                                   # the exam: 12 classes, 7 rotting, live on the real board
-python3 scripts/demo_mem0_audit.py --mock       # the whole loop, one command: fork → rule → re-audit → re-alarm
-helicon guard "we have 4 hackathon wins"        # the ruling BLOCKS a wrong claim before it's written
-# close: one live Qwen judgment landing on Model Studio / DashScope
-```
+**Total: 5 beats, ~3:00. VO ≈ 300 words.** Five clicks, no terminal.
 
 ---
 
-## SHOT LIST
+## SHOT LIST (dashboard tabs)
 
-| # | t | ON SCREEN (one moment) | SPOKEN (VO) | On-screen text |
-|---|-----|------------------------|-------------|----------------|
-| 1 | 0:00–0:30 | `helicon audit` runs; the 12-class scorecard fills in; cursor rests on `7/12 classes show rot right now · 12/12 fully tested`; R4 shows `RELAY->FAVOUR … 24 IN CODE` | "I have two years of agent memory. Fifteen projects, four tools, almost four thousand live notes — and I can't tell you which of it is still true. Neither can my agents. So I built the exam. One command, across the whole board. Twelve ways memory rots, checked live. Right now, seven of twelve are firing. That isn't a mock store. That's my real memory — failing its own test." | `whole board · 12 classes · live` |
-| 2 | 0:30–1:35 | `python3 scripts/demo_mem0_audit.py --mock` → Phase 1 R11 `aurora (protocol/market)` + R12 `aurora->solana`; Phase 2 the two rulings + the compiled Golden Rules; Phase 3 `CLEAN`; **beat of silence**; Phase 4 `R11 ROT FOUND` re-alarm | "Here's the one thing a memory store cannot do. Point Helicon at a store — this one is Mem0's own format. Two memories disagree on what Aurora even *is*: a payments protocol in one, a lending market in another. Plus a claim nothing ever grounded — Aurora rides Solana. A store kept all three and will cite any of them tomorrow. Helicon sees the fork. So I rule it. Once. Aurora is a payments protocol — the other reading loses. And the ruling doesn't just get filed. It compiles into the rules my agent reads before it writes. Re-audit: clean. Then a new memory sneaks the old definition back in. A store would just save it. Watch — re-alarm. The instant a settled verdict is contradicted, it fires again." | `rule once → it becomes law` · (Phase 4) `never twice` |
-| 3 | 1:35–2:15 | `helicon guard "we have 4 hackathon wins"` → `BLOCKED — 1 ruling(s) contradict this output` + `ruled '9' … asserts '4'` + `ruling #281` | "And that memory has teeth. I once ruled my hackathon-win count at nine. So watch what happens when an agent tries to write four. Blocked — before it's ever said. The ruling became policy, and policy stops the mistake from coming back, with the receipt attached: ruling two-eighty-one. That is the loop closed. Catch it, rule it, and never again." | `caught before it's written` |
-| 4 | 2:15–3:00 | Split or cut: the `report`/eval line `DEGRADED · grounding 0.538 · 1 broken`, then a terminal firing one live Qwen call, the token-cost log ticking up against `dashscope-intl.aliyuncs.com` | "Here's the part most demos hide. I point the exam at my own store, and it comes back DEGRADED. Grounding at point five three eight. One task broken, nine strained. A system that reports its own weakness is the product; one that shows you a green light is just another benchmark. And every judgment you just watched runs on Qwen — Model Studio for the calls, DashScope for the embeddings, live, right now. Kill the key and half of this goes dark. Memory stores remember. Mount Helicon judges what's still true. The verifier — with a memory." | `Mount Helicon` |
+**Beat 1 — "The Exam" tab (0:00–0:30).** The 12-class scorecard, live. Cursor rests on the summary line (`7/12 classes show rot right now · 12/12 fully tested`).
+> "I have two years of agent memory — fifteen projects, four tools, almost four thousand live notes. I can't tell you which of it is still true, and neither can my agents. So I built the exam. Twelve ways memory rots, checked live, across the whole board. Right now, seven of twelve are firing. That's not a mock. That's my real memory, failing its own test."
 
----
+**Beat 2 — "Needs Ruling" tab (0:30–1:25).** Scroll the queue to the identity fork **`'yieldbound' — treasury vs tracker`**. Open the card. Rule it *a yield treasury*. It leaves the queue.
+> "Here's what a memory store can't do. Two of my notes disagree on what Yieldbound even *is* — a yield treasury in one, a wallet tracker in another. A store kept both and will cite either one tomorrow. Helicon sees the fork. So I rule it. Once. Yieldbound is a treasury — the other reading loses. And it clears."
 
-## CONTINUOUS SPOKEN SCRIPT (~420 words, read at ~145 wpm)
+**Beat 3 — "Golden Rules" tab (1:25–2:05).** The new ruling sits at the top as compiled law, with its receipt.
+> "The ruling doesn't just get filed. It compiles into the Golden Rules my agent reads before it writes — with the receipt. And the instant anything contradicts it, it re-alarms. A store forgets it ever asked. Helicon remembers what I ruled. That's the loop: catch it, rule it, never again."
 
-> I have two years of agent memory. Fifteen projects, four tools, almost four thousand live notes — and I can't tell you which of it is still true. Neither can my agents. So I built the exam. **One command, across the whole board. Twelve ways memory rots, checked live.** Right now, seven of twelve are firing. That isn't a mock store. That's my real memory — **failing its own test.**
->
-> Here's the one thing a memory store cannot do. Point Helicon at a store — this one is Mem0's own format. Two memories disagree on what Aurora even *is*: a payments protocol in one, a lending market in another. Plus a claim nothing ever grounded — Aurora rides Solana. A store kept all three and will cite any of them tomorrow. **Helicon sees the fork.**
->
-> So I rule it. Once. Aurora is a payments protocol — the other reading loses. And the ruling doesn't just get filed. **It compiles into the rules my agent reads before it writes.** Re-audit: clean.
->
-> Then a new memory sneaks the old definition back in. A store would just save it. Watch — **re-alarm.** The instant a settled verdict is contradicted, it fires again.
->
-> And that memory has teeth. I once ruled my hackathon-win count at nine. So watch what happens when an agent tries to write four. **Blocked — before it's ever said.** The ruling became policy, and policy stops the mistake from coming back, with the receipt attached: ruling two-eighty-one. That is the loop closed. **Catch it, rule it, and never again.**
->
-> Here's the part most demos hide. I point the exam at my own store, and it comes back **DEGRADED.** Grounding at point five three eight. One task broken, nine strained. A system that reports its own weakness is the product; one that shows you a green light is just another benchmark.
->
-> And every judgment you just watched runs on Qwen — **Model Studio** for the calls, **DashScope** for the embeddings, live, right now. Kill the key and half of this goes dark.
->
-> Memory stores remember. Mount Helicon judges what's still true. **The verifier — with a memory.**
+**Beat 4 — "Memory" tab (2:05–2:35).** The health view: **DEGRADED**, grounding **0.538**, one task broken.
+> "Here's the part most demos hide. Pointed at my own store, my own exam comes back DEGRADED. Grounding at point five three eight, one task broken. A system that reports its own weakness is the product. One that shows you a green light is just another benchmark."
+
+**Beat 5 — "Qwen as Judge" tab (2:35–3:00).** Qwen doing the judging, live; then cut to a black tagline card.
+> "And every judgment here runs on Qwen — Model Studio for the calls, DashScope for the embeddings. Kill the key and half of this goes dark. Memory stores remember. Mount Helicon judges what's still true. The verifier — with a memory."
 
 ---
 
-## HOW TO CAPTURE (one sitting, repeatable)
+## CONTINUOUS SPOKEN SCRIPT (~300 words, ~145 wpm)
 
-**Terminal:** dark theme, ≥18pt, narrow window (no wrap), clean prompt. Pre-run each command once to warm the embedding model + Qwen cache, then screen-record a clean replay. Type nothing on camera — paste or use `↑`.
-
-**Demo on a COPY so takes are repeatable** (the guard reads rulings; the mem0 demo writes to a bundled store, not yours):
-```bash
-cp data/helicon.db /tmp/demo.db
-export HELICON_DB=/tmp/demo.db          # or point config.json db_path at the copy
-```
-
-**Beat 1 — `helicon audit`** (real board, read-only). Verified 2026-07-19: `7/12 classes show rot right now · 12/12 fully tested, 0 partial`, R4 shows `RELAY->FAVOUR … 24 IN CODE`. The exam prints no memory total; if the overlay needs one, `helicon doctor` prints `… memories (… live, … retired)`. **Re-read the 7/12 off your own run** — it moves.
-
-**Beat 2 — `python3 scripts/demo_mem0_audit.py --mock`** (bundled Mem0-format store, no key, deterministic). Verified: prints the four phases end to end — R11 `aurora (protocol/market)`, R12 `aurora->solana`; the two rulings + compiled Golden Rules; Phase 3 `CLEAN`; Phase 4 re-alarm. This is the one-command loop; nothing to stage. Hold ~1.5s on the Phase-4 re-alarm before cutting.
-
-**Beat 3 — `helicon guard "we have 4 hackathon wins"`** (real rulings). Verified: `BLOCKED — 1 ruling(s) contradict this output` / `wins for 'hackathon' was ruled '9', but this asserts '4'` / `ruling #281`. Robust; needs your real store (or the copy).
-
-**Beat 4 — the honest close.** The DEGRADED numbers are live in `data/eval-latest.json` (`overall: DEGRADED`, `grounding_pass_rate 0.538`, `battery: 3 healthy / 9 degraded / 1 broken`); show them via `helicon report --llm` or an overlay. Then fire ONE live Qwen call and let the token-cost log tick — e.g. `helicon battery "some task"` (judges on Qwen) or the dashboard's usage panel. **No hosted URL is shown or claimed** — the Alibaba proof is the running Qwen/DashScope calls + the linked `qwen.py` / `embeddings.py` code files + the deployable `fc/` config.
-
-**Edit rhythm:** hard cuts between commands. Music drops for the silence before the Phase-4 re-alarm and before `BLOCKED`. Open on the exam, close on the tagline card.
+> I have two years of agent memory — fifteen projects, four tools, almost four thousand live notes. I can't tell you which of it is still true, and neither can my agents. So I built the exam. **Twelve ways memory rots, checked live, across the whole board.** Right now, seven of twelve are firing. That's not a mock. That's my real memory, **failing its own test.**
+>
+> Here's what a memory store can't do. Two of my notes disagree on what Yieldbound even *is* — a yield treasury in one, a wallet tracker in another. A store kept both and will cite either one tomorrow. **Helicon sees the fork.** So I rule it. Once. Yieldbound is a treasury — the other reading loses. And it clears.
+>
+> The ruling doesn't just get filed. **It compiles into the Golden Rules my agent reads before it writes** — with the receipt. And the instant anything contradicts it, it re-alarms. A store forgets it ever asked. Helicon remembers what I ruled. Catch it, rule it, **never again.**
+>
+> Here's the part most demos hide. Pointed at my own store, my own exam comes back **DEGRADED.** Grounding at point five three eight, one task broken. A system that reports its own weakness is the product; one that shows you a green light is just another benchmark.
+>
+> And every judgment here runs on Qwen — **Model Studio** for the calls, **DashScope** for the embeddings. Kill the key and half of this goes dark. Memory stores remember. Mount Helicon judges what's still true. **The verifier — with a memory.**
 
 ---
 
-## Honest scope note
+## HOW TO CAPTURE
 
-No single project trips all 12 classes, so the arc is *whole-board breadth* (Beat 1, real) + *the moat loop* (Beat 2, on a Mem0 store) + *policy with teeth* (Beat 3, real ruling) + *self-reported degradation* (Beat 4, real). Claiming one project hits every class would be fake — and Helicon would catch it.
+**Browser:** full-screen, dark theme, 125–150% zoom so text is legible on playback. Pre-load each tab once (warms the chunk + data) before the clean take.
+
+**Beats verified 2026-07-19** on the real board:
+- *The Exam* prints the 12-class scorecard live (`7/12` on this run — read yours).
+- *Needs Ruling* carries real rulable forks — `#355 yieldbound treasury/tracker`, plus `machine`, `litmus`, `qwen`, and the RELAY→FAVOUR supersession (215 live cubes still asserting the dead name). Ruling `yieldbound` clears it from the exam — the ruling sticks.
+- *Memory* / health reads DEGRADED from `data/eval-latest.json` (grounding 0.538; 3 healthy / 9 degraded / 1 broken).
+- *Qwen as Judge* shows the Qwen judging surface — the visual Alibaba proof.
+
+**Honest scope note — the re-alarm.** The never-twice re-alarm fires reliably in the one-command `scripts/demo_mem0_audit.py --mock` flow; on the full 8k-cube board it needs an embedding rescan and does not reproduce from a single insert. So this script *speaks* the never-twice guarantee over the Golden Rules screen rather than staging an on-screen re-alarm. If you want it shown, cut ~8s to the `--mock` demo's Phase 4 (it prints the re-alarm) and back.
+
+**No hosted URL is shown or claimed.** The Alibaba proof is the running Qwen/DashScope calls behind every judgment + the linked code files (`qwen.py`, `embeddings.py`) + the deployable `fc/` config.
+
+**Edit rhythm:** hard cuts between tabs; hold ~1.5s on the fork clearing in Beat 2 and on the DEGRADED verdict in Beat 4; close on the tagline card.

@@ -2,23 +2,24 @@
 
 **Deadline:** Jul 20, 2026, 2:00 PM PDT (verified at the Devpost source Jul 16; the "Jul 8" on early posts was the original date, extended). **Prize:** $7K cash + $3K Alibaba Cloud credits per track.
 
-**Position: the Memory Operations System for AI agents.** A local-first command
-center (dashboard + CLI + MCP) where one operator **governs agent memory by
-exception** — the machine reviews most things automatically, the human rules only
-the real exceptions, and every governed change lands with a receipt and an undo.
-The reproducible judge demo (`helicon demo`, seeded, keyless, no personal data)
-and the 5-minute operator-day walkthrough are in **[`GOLDEN_SUBMISSION.md`](GOLDEN_SUBMISSION.md)**;
-the honest feature inventory is in **[`HELICON_OS_FEATURE_MAP.md`](HELICON_OS_FEATURE_MAP.md)**.
+**Position: a Qwen-powered governance layer for agent memory** — a memory control
+plane, not another memory store. A local-first command center (dashboard + CLI + MCP)
+where the machine handles routine rot, the human rules only genuine contradictions,
+and every ruling becomes an enforceable rule with a receipt and a reversible undo.
+The reproducible judge demo (`helicon demo`, seeded, keyless, no personal data) and
+the sub-3-minute walkthrough are in **[`GOLDEN_SUBMISSION.md`](GOLDEN_SUBMISSION.md)**;
+the honest inventory is in **[`HELICON_OS_FEATURE_MAP.md`](HELICON_OS_FEATURE_MAP.md)**.
 
-> **Real now vs. roadmap (strict).** *Real:* the govern-by-exception loop
-> (machine review → human exceptions → one Apply → receipt with a verified probe →
-> undo, tested at the HTTP boundary), live Qwen contradiction/grounding judging
-> with an honest DEGRADED verdict, and a localhost-safe, no-personal-data demo.
-> *Roadmap (labelled, not shown as working):* the `TaskRun`/`ContextPacket` loop
-> that would make context/skill/model choices *causal*, a reproducible A/B
-> comparison surface, and a first-class nightly governed surface. Helicon today is
-> the **govern** half of the OS, shipped and tested; the **learn** half is
-> designed, not built, and this document does not pretend otherwise.
+> **Real now vs. roadmap (strict).** *Real:* the governed-memory loop — audit →
+> human ruling → verified apply (receipt) → enforced guard → undo, tested at the
+> HTTP boundary; live Qwen contradiction/grounding judging with an honest DEGRADED
+> verdict; a localhost-safe, no-personal-data demo; and a **tested, read-only
+> TaskRun/ContextPacket provenance recorder** (objective, frozen candidate context,
+> artifact, attested outcome) that **does not yet drive retrieval, routing, or
+> learning**. *Roadmap (not claimed working):* feeding that recorder into a *causal*
+> context/routing decision, a read-only MCP retrieve path, and evidence-backed
+> context recommendations. Helicon is the **govern** half — shipped and tested — and
+> does not pretend to be a complete "memory OS."
 
 The sections below are the *evidence* — run against the author's own real store —
 that the govern half works on real memory, not a fixture.

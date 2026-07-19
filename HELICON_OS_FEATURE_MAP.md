@@ -1,9 +1,10 @@
 # Mount Helicon — Memory OS Feature Map (brutally factual)
 
-Position: **the Memory Operations System for AI agents** — a local-first command
-center (dashboard + CLI + MCP) where one operator governs agent memory *by
-exception*. This map is the honest inventory: what a skeptical judge can see work
-today vs. what is claim-only.
+Position: **a Qwen-powered governance layer for agent memory** (a memory control
+plane) — a local-first command center where the machine handles routine rot, the
+human rules only genuine contradictions, and each ruling becomes an enforceable rule.
+"Memory OS" is the long-term horizon, not today's claim. This map is the honest
+inventory: what a skeptical judge can see work today vs. what is claim-only.
 
 Legend: **[SHIP]** real + demonstrable now · **[HIDDEN]** works but invisible/
 unintegrated · **[DESIGN]** designed, not built · **[REQ]** required for submission
@@ -22,8 +23,8 @@ unintegrated · **[DESIGN]** designed, not built · **[REQ]** required for submi
 | Routine/skill health (`stackwatch.py`, `watch.py`, `scripts/nightly.sh`, `integrity.py`) | Nightly improvement | nightly liveness + skill-drift; degraded/never-ran states | `stackwatch` tests; doctor | **[HIDDEN]** exists; not a first-class governed surface |
 | MCP server, 14 tools (`mcp_server.py`) | Agent interface | agent retrieves context / checks guard / flags | tool list | **[HIDDEN][REQ]** works; `helicon_context` mutates retrieval state on lookup (needs a read-only mode) |
 | Multi-source ingest (`connectors/`) | Memory intake | Claude Code, git, Obsidian, skills, Mem0 — read-only | scan tests | **[SHIP]** (off in demo, by design) |
-| Alibaba Function Compute deploy (`fc/`) | Deployment | container-ready `s deploy` to FC | `fc/s.yaml` + `Dockerfile` present; **no live URL** (KYC-blocked) | **[REQ]** code-file proof only; live deploy **[CUT]** as a claim |
-| TaskRun / ContextPacket | Task / work surface | bind objective ↔ frozen context ↔ artifact ↔ verification | design docs only | **[DESIGN]** the second loop; not built |
+| Alibaba Cloud: Model Studio + DashScope + **Cloud Shell run** (`qwen.py`, `embeddings.py`, `scripts/cloudshell-run.sh`) | Runs on Alibaba Cloud | Qwen judging + embeddings live; full backend booted in Alibaba Cloud Shell | live Qwen call; `cloudshell-run.sh` | **[SHIP][REQ]** backend runs on Alibaba Cloud (Cloud Shell); **no persistent URL** (KYC), local-first by design |
+| TaskRun / ContextPacket recorder (`taskrun.py`, `context_policy.py`) | Provenance recorder | open → freeze packet → attach artifact → **attested** outcome | `test_taskrun` (6 tests) | **[SHIP]** tested, read-only; **does NOT yet drive retrieval, routing, or learning** |
 | "Context OS" framing, autonomous optimization, write-back, agent-comparison-as-proof | — | — | — | **[CUT]** until a demo proves each |
 
 ## What the operator-day demo can honestly show today

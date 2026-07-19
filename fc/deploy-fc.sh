@@ -23,7 +23,7 @@ cd "$REPO_ROOT"
 
 echo "==> Preflight"
 [ -f web/dist/index.html ] || { echo "web/dist missing — run: (cd web && npx vite build)"; exit 1; }
-[ -f data/helicon-demo.db ] || { echo "data/helicon-demo.db missing — run: python3 scripts/demo_seed.py"; exit 1; }
+[ -f data/helicon-demo.db ] || { echo "==> seeding demo store"; python3 scripts/demo_seed.py >/dev/null || { echo "demo seed failed"; exit 1; }; }
 
 # The store about to be published. authType is anonymous and the URL goes on
 # Devpost, so this is a one-way door: an image pushed to ACR with a private life
@@ -52,8 +52,9 @@ if hits:
     sys.exit(f"    REFUSED: personal markers in the store to be published: {hits}")
 print(f"    ok: {n} seeded cubes, no personal markers -> safe to publish")
 PY
-: "${QWEN_API_KEY:?export QWEN_API_KEY before deploy (Model Studio inference key)}"
-: "${DASHSCOPE_API_KEY:?export DASHSCOPE_API_KEY before deploy (embeddings key)}"
+# Keys are OPTIONAL now: the hosted instance serves the keyless demo (deterministic
+# exam + governance loop). Set them only if you want live Qwen judging on the host.
+[ -n "${QWEN_API_KEY:-}" ] || echo "  note: no QWEN_API_KEY — hosting the keyless demo (dashboard + deterministic exam)"
 command -v s >/dev/null || { echo "Serverless Devs 's' not installed — npm i -g @serverless-devs/s"; exit 1; }
 
 echo "==> Building image: $IMAGE  (context: repo root, lean/keyless)"

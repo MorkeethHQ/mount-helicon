@@ -27,12 +27,12 @@ resources:
       diskSize: 512                   # writable /tmp for the DB copy
       timeout: 60
       instanceConcurrency: 20
-      environmentVariables:
-        # Injected at deploy time from your shell (deploy-fc.sh passes them through).
-        # Never commit real keys here — these two are the whole Alibaba Cloud
-        # backend dependency: Model Studio inference + DashScope embeddings.
-        QWEN_API_KEY: "${env.QWEN_API_KEY}"
-        DASHSCOPE_API_KEY: "${env.DASHSCOPE_API_KEY}"
+      # No environmentVariables: the hosted instance serves the seeded DEMO store,
+      # whose exam + governance loop + guard are deterministic and run KEYLESS. Live
+      # Qwen judging degrades gracefully (the battery says "no key"); Qwen is proven
+      # on Model Studio separately (the live call in GOLDEN_SUBMISSION + qwen.py /
+      # embeddings.py). This keeps the deploy free of any secret and any ${env.*}
+      # resolution that older Serverless Devs versions choke on.
       triggers:
         - triggerName: httpTrigger
           triggerType: http

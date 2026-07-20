@@ -373,7 +373,7 @@ memory is the only memory you can safely port."*
 **Shot list:** (1) guard BLOCKED on a ruled-wrong claim — the hero, open AND close on it;
 (2) `audit --judge` + `resolve`; (3) `review --terminals` contradiction line; (4)
 `report --llm` DEGRADED verdict, live; (5) a live Qwen call landing on DashScope (tail the
-token-cost log). Screen-record the terminal at a legible font size. No hosted URL is
-claimed or shown — the Alibaba proof is the running API calls plus the linked code files
-(`qwen.py`, `embeddings.py`) and the deployable `fc/` config. The full timed 3-minute
+token-cost log). Screen-record the terminal at a legible font size. The Alibaba proof is the live
+ECS deployment at `http://47.237.3.97:8420` plus the running Qwen/DashScope API calls and the
+linked code files (`qwen.py`, `embeddings.py`). The full timed 3-minute
 script is in `DEMO-SCRIPT.md`.

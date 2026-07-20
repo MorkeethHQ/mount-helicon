@@ -31,7 +31,7 @@ helicon demo            # seeds a labelled demo store + opens the dashboard
 ```
 
 **Fresh-clone verification:** `bash scripts/judge-check.sh` (clone → install → boot →
-populated, no personal-data leak) · `python3 -m pytest -q` (380 passing). Localhost-
+populated, no personal-data leak) · `python3 -m pytest -q` (393 passing). Localhost-
 bound, keyless, scans nothing on your machine.
 
 ---

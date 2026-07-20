@@ -67,6 +67,6 @@
 
 **Honest scope note — the re-alarm.** The never-twice re-alarm fires reliably in the one-command `scripts/demo_mem0_audit.py --mock` flow; on the full 8k-cube board it needs an embedding rescan and does not reproduce from a single insert. So this script *speaks* the never-twice guarantee over the Golden Rules screen rather than staging an on-screen re-alarm. If you want it shown, cut ~8s to the `--mock` demo's Phase 4 (it prints the re-alarm) and back.
 
-**No hosted URL is shown or claimed.** The Alibaba proof is the running Qwen/DashScope calls behind every judgment + the linked code files (`qwen.py`, `embeddings.py`) + the deployable `fc/` config.
+**The Alibaba proof is a live deployment** at `http://47.237.3.97:8420` (ECS, Singapore), plus the running Qwen/DashScope calls behind every judgment and the linked code files (`qwen.py`, `embeddings.py`).
 
 **Edit rhythm:** hard cuts between tabs; hold ~1.5s on the fork clearing in Beat 2 and on the DEGRADED verdict in Beat 4; close on the tagline card.

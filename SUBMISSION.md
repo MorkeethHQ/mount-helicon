@@ -230,7 +230,7 @@ Run it with `--llm`, which is the **full** exam (all six context tests, not just
 ```
 $ helicon report --llm
 
-Overall: DEGRADED   (battery: 2 healthy / 10 degraded / 1 broken of 13 tasks; last scan <2h ago)
+Overall: DEGRADED   (battery: 2 healthy / 10 degraded / 1 broken of 13 tasks; scan freshness printed live)
 
 1. Efficient storage & retrieval          HEALTHY
    P@3 0.615  MRR 0.596  (n=13, small internal benchmark, one label per query)
@@ -246,11 +246,11 @@ Overall: DEGRADED   (battery: 2 healthy / 10 degraded / 1 broken of 13 tasks; la
 
 **Read the battery split honestly: 2 healthy, not 7.** Plain `helicon report` prints `7 healthy / 5 degraded / 1 broken`, because without `--llm` the Contradiction and Grounding tests never run and 7 tasks are counted healthy on a partial exam. Worse, it printed `(LLM tests off: no key)` on a machine with a working key, blaming the environment for a missing flag. Both were fixed while preparing this submission: the headline now says `deterministic-only` when it is, and the message names the flag instead of guessing at the cause. The flattering number was one command away from being the number in this document, which is precisely the failure mode the tool exists to catch.
 
-**What holds the verdict at DEGRADED**, all of it real and none of it papered over: **grounding pass 0.385** (the Qwen judge finds fewer than half the retrieved contexts specific and verifiable), **8 live cross-source conflicts / 3 open findings** in the claim selector, and **2 retrieval regressions of 13**. A system that reports its own degradation is the product; one that hides it behind a green light is just another benchmark.
+**What holds the verdict at DEGRADED**, all of it real and none of it papered over: **grounding pass 0.385** (the Qwen judge finds fewer than half the retrieved contexts specific and verifiable), plus any live cross-source conflicts and retrieval regressions the run surfaces (counts printed live, not memorized). A system that reports its own degradation is the product; one that hides it behind a green light is just another benchmark.
 
-### The 2 broken tasks, diagnosed rather than hidden
+### The broken task, diagnosed rather than hidden
 
-Two of the 13 benchmark tasks (`Bagel agent deployment and operations`, `Content Strategy`) fail the **critical Freshness** test. Both fail for the same reason, and the diagnosis is worth more than a green number would be:
+One of the 13 benchmark tasks (`Content Strategy`) fails the **critical Freshness** test (the exact count varies per run; the failure mode does not), and the diagnosis is worth more than a green number would be:
 
 ```
 [BROKEN] Content Strategy

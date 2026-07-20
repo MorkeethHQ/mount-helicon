@@ -36,34 +36,33 @@ bound, keyless, scans nothing on your machine.
 
 ---
 
-## The demo (under 3 minutes — the governance loop, and only that)
+## The demo (under 3 minutes — the governance loop)
 
-1. **0:00–0:15 — the thesis.** *"Memory stores remember; Helicon checks whether what
-   they remember is still true."*
-2. **0:15–0:35 — a DANGEROUS contradiction + Qwen's verdict.** The store holds
+1. **0:00–0:15 — native entry.** Open Mount Helicon from its macOS menu-bar icon.
+   *"Memory stores remember; Helicon checks whether what they remember is still true."*
+2. **0:15–0:40 — a dangerous contradiction.** The seeded store holds
    "Stripe is in test mode — safe to run a checkout" (March) and "we went live on
    Stripe July 1 — every charge is real money" (July). Believe the stale one and an
-   agent **charges real customers by mistake.** Qwen (Model Studio) judges it:
-   **CONTRADICTION**. Similarity scores can't; a contradiction judge can.
-3. **0:35–1:05 — one tap → applied → receipt.** The human taps the current answer
+   agent **charges real customers by mistake.**
+3. **0:40–1:15 — full terminal loop.** Run `helicon heal --demo --reset`, then
+   `helicon heal --demo --apply`. The deterministic exam measures 12 rot classes,
+   applies routine repairs, and leaves human truth decisions visible.
+4. **1:15–1:35 — Qwen's verdict.** A live Model Studio call returns
+   **CONTRADICTION**. Similarity scores cannot make that logical judgment.
+5. **1:35–2:05 — one tap → applied → receipt.** The human taps the current answer
    ("live — real money"); it applies instantly — compiled into GOLDEN_RULES; the
    receipt proves it landed and is enforced (*recorded · in GOLDEN_RULES · guard now
    enforces it*), with Undo. One action, not a staging ceremony.
-4. **1:05–1:25 — the guard enforces it.** Show the guard **blocking** "Stripe is in
+6. **2:05–2:20 — the guard enforces it.** Show the guard **blocking** "Stripe is in
    test mode, safe to run a checkout" before an agent can act on it — the exact
    mistake that would have charged real cards.
-5. **1:25–1:30 — DEGRADED, not green.** `helicon battery` on the demo store returns
-   **Verdict: DEGRADED** — the Grounding check *fails* ("the retrieved memories are
-   vague fragments… that do not provide specific, verifiable information"), so it
-   withholds confidence instead of faking a green light. *"It refuses to invent
-   confidence."*
-6. **1:30–2:00 — running on Alibaba Cloud.** Open **http://47.237.3.97:8420** in the
-   browser — the same dashboard, served live from an **Alibaba Cloud ECS** instance in
-   Singapore. *"It's deployed and running on Alibaba Cloud — and the judging you just
-   saw is Qwen on Model Studio."*
+7. **2:20–2:38 — honest report.** `helicon report --llm` reports **DEGRADED**,
+   grounding **0.385**, and one broken task on the full store.
+8. **2:38–2:50 — running on Alibaba Cloud.** Show
+   `curl -s http://47.237.3.97:8420/api/health` returning `status: ok` from the live
+   **Alibaba Cloud ECS** backend in Singapore.
 
-That is the whole proof, in under two minutes. No nightly-health montage, no "OS,"
-no "it learns" — those dilute the governance story that is the point.
+That is the whole proof in under three minutes.
 
 ---
 
@@ -84,7 +83,7 @@ demonstrates use of Alibaba Cloud services and APIs."* Helicon meets both.
 
 - **The backend is deployed and running on Alibaba Cloud ECS — a live public URL:**
   **http://47.237.3.97:8420** (region **Singapore / ap-southeast-1**). Verified live:
-  `GET /api/health` → `{"status":"ok","memories":11,"cubes":11}`, `GET /` → HTTP 200.
+  `GET /api/health` → `{"status":"ok",...}`, `GET /` → HTTP 200.
   It serves the seeded **demo** store (no personal data). Reproducible on any Linux
   host with [`scripts/cloudshell-run.sh`](scripts/cloudshell-run.sh) (local-first: the
   same backend runs on the judge's machine, Cloud Shell, or an ECS box).

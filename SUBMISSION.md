@@ -230,23 +230,23 @@ Run it with `--llm`, which is the **full** exam (all six context tests, not just
 ```
 $ helicon report --llm
 
-Overall: DEGRADED   (battery: 3 healthy / 9 degraded / 1 broken of 13 tasks; last scan 6.0h ago)
+Overall: DEGRADED   (battery: 2 healthy / 10 degraded / 1 broken of 13 tasks; last scan <2h ago)
 
 1. Efficient storage & retrieval          HEALTHY
    P@3 0.615  MRR 0.596  (n=13, small internal benchmark, one label per query)
-   ingest dedup rate 0.997, 17 consolidations
+   ingest dedup rate 1.0, 17 consolidations
 2. Timely forgetting                      HEALTHY
-   decay predicts human kills: rank-AUC 0.781; freshness pass rate 0.846
+   decay predicts human kills: rank-AUC 0.781; freshness pass rate 0.923
 3. Recall under limited context windows   HEALTHY
-   thinness pass 1.0, redundancy pass 0.923, ~994 tokens/query (top-5)
+   thinness pass 1.0, redundancy pass 0.923, ~1016 tokens/query (top-5)
 4. Cross-session accuracy                 DEGRADED
-   snapshots: 1 regressed of 13; contradiction pass 0.846, grounding pass 0.462
+   snapshots: 2 regressed of 13; contradiction pass 0.846, grounding pass 0.385
    cross-source pairing: 8 live conflict(s), 3 open finding(s)
 ```
 
-**Read the battery split honestly: 2 healthy, not 7.** Plain `helicon report` prints `7 healthy / 4 degraded / 2 broken`, because without `--llm` the Contradiction and Grounding tests never run and 7 tasks are counted healthy on a partial exam. Worse, it printed `(LLM tests off: no key)` on a machine with a working key, blaming the environment for a missing flag. Both were fixed while preparing this submission: the headline now says `deterministic-only` when it is, and the message names the flag instead of guessing at the cause. The flattering number was one command away from being the number in this document, which is precisely the failure mode the tool exists to catch.
+**Read the battery split honestly: 2 healthy, not 7.** Plain `helicon report` prints `7 healthy / 5 degraded / 1 broken`, because without `--llm` the Contradiction and Grounding tests never run and 7 tasks are counted healthy on a partial exam. Worse, it printed `(LLM tests off: no key)` on a machine with a working key, blaming the environment for a missing flag. Both were fixed while preparing this submission: the headline now says `deterministic-only` when it is, and the message names the flag instead of guessing at the cause. The flattering number was one command away from being the number in this document, which is precisely the failure mode the tool exists to catch.
 
-**What holds the verdict at DEGRADED**, all of it real and none of it papered over: **grounding pass 0.462** (the Qwen judge finds fewer than half the retrieved contexts specific and verifiable), **8 live cross-source conflicts / 3 open findings** in the claim selector, and **1 retrieval regression of 13**. A system that reports its own degradation is the product; one that hides it behind a green light is just another benchmark.
+**What holds the verdict at DEGRADED**, all of it real and none of it papered over: **grounding pass 0.385** (the Qwen judge finds fewer than half the retrieved contexts specific and verifiable), **8 live cross-source conflicts / 3 open findings** in the claim selector, and **2 retrieval regressions of 13**. A system that reports its own degradation is the product; one that hides it behind a green light is just another benchmark.
 
 ### The 2 broken tasks, diagnosed rather than hidden
 
@@ -323,7 +323,7 @@ One result that proves LLM-judged contradiction is not enough: in the model bake
 > first-person "my own system failing my own threshold" beats are yours to voice.
 > **Before recording: `set -a && source .env && set +a && helicon report --llm` and
 > read whatever verdict it prints.** The numbers below drift between runs (last full
-> exam: DEGRADED, 3 healthy / 9 degraded / 1 broken, grounding 0.538, P@3 0.615), so
+> exam: DEGRADED, 2 healthy / 10 degraded / 1 broken, grounding 0.385, P@3 0.615), so
 > speak the live number, never a memorized one. The verdict that matters is the word
 > DEGRADED, and it has held every run. **Never say "0 broken."** ~3 min, hard cap 3:00.
 

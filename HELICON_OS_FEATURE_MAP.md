@@ -33,7 +33,7 @@ Real spine, in order: **machine review** (exam auto-manages the bulk) → **huma
 review** (the exception queue: the vegetarian/chicken contradiction, an identity
 fork) → **one governed Apply** (stage → apply → receipt: compiled into GOLDEN_RULES,
 guard now blocks it, undo) → **Qwen load-bearing** (it judged that contradiction
-live; the battery returns an honest DEGRADED with grounding 0.538) → **nightly
+live; the battery returns an honest DEGRADED with grounding under half) → **nightly
 health** (routine/skill liveness with degraded/never-ran states, via stackwatch).
 
 The **task surface (TaskRun)** and a **reproducible A/B comparison** are the two

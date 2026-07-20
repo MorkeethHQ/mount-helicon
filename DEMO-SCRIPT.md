@@ -33,8 +33,8 @@
 **Beat 3 — "Golden Rules" tab (1:25–2:05).** The new ruling sits at the top as compiled law, with its receipt.
 > "The ruling doesn't just get filed. It compiles into the Golden Rules my agent reads before it writes — with the receipt. And the instant anything contradicts it, it re-alarms. A store forgets it ever asked. Helicon remembers what I ruled. That's the loop: catch it, rule it, never again."
 
-**Beat 4 — "Memory" tab (2:05–2:35).** The health view: **DEGRADED**, grounding **0.538**, one task broken.
-> "Here's the part most demos hide. Pointed at my own store, my own exam comes back DEGRADED. Grounding at point five three eight, one task broken. A system that reports its own weakness is the product. One that shows you a green light is just another benchmark."
+**Beat 4 — "Memory" tab (2:05–2:35).** The health view: **DEGRADED**, grounding **under half** (~0.39 live — read yours), one task broken.
+> "Here's the part most demos hide. Pointed at my own store, my own exam comes back DEGRADED. Grounding under half, one task broken. A system that reports its own weakness is the product. One that shows you a green light is just another benchmark."
 
 **Beat 5 — "Qwen as Judge" tab (2:35–3:00).** Qwen doing the judging, live; then cut to a black tagline card.
 > "And every judgment here runs on Qwen — Model Studio for the calls, DashScope for the embeddings. Kill the key and half of this goes dark. Memory stores remember. Mount Helicon judges what's still true. The verifier — with a memory."
@@ -49,7 +49,7 @@
 >
 > The ruling doesn't just get filed. **It compiles into the Golden Rules my agent reads before it writes** — with the receipt. And the instant anything contradicts it, it re-alarms. A store forgets it ever asked. Helicon remembers what I ruled. Catch it, rule it, **never again.**
 >
-> Here's the part most demos hide. Pointed at my own store, my own exam comes back **DEGRADED.** Grounding at point five three eight, one task broken. A system that reports its own weakness is the product; one that shows you a green light is just another benchmark.
+> Here's the part most demos hide. Pointed at my own store, my own exam comes back **DEGRADED.** Grounding under half, one task broken. A system that reports its own weakness is the product; one that shows you a green light is just another benchmark.
 >
 > And every judgment here runs on Qwen — **Model Studio** for the calls, **DashScope** for the embeddings. Kill the key and half of this goes dark. Memory stores remember. Mount Helicon judges what's still true. **The verifier — with a memory.**
 
@@ -62,7 +62,7 @@
 **Beats verified 2026-07-19** on the real board:
 - *The Exam* prints the 12-class scorecard live (`7/12` on this run — read yours).
 - *Needs Ruling* carries real rulable forks — `#355 yieldbound treasury/tracker`, plus `machine`, `litmus`, `qwen`, and the RELAY→FAVOUR supersession (215 live cubes still asserting the dead name). Ruling `yieldbound` clears it from the exam — the ruling sticks.
-- *Memory* / health reads DEGRADED from `data/eval-latest.json` (grounding 0.538; 3 healthy / 9 degraded / 1 broken).
+- *Memory* / health reads DEGRADED from `data/eval-latest.json` (grounding ~0.39 live; 2 healthy / 10 degraded / 1 broken — read yours before the take).
 - *Qwen as Judge* shows the Qwen judging surface — the visual Alibaba proof.
 
 **Honest scope note — the re-alarm.** The never-twice re-alarm fires reliably in the one-command `scripts/demo_mem0_audit.py --mock` flow; on the full 8k-cube board it needs an embedding rescan and does not reproduce from a single insert. So this script *speaks* the never-twice guarantee over the Golden Rules screen rather than staging an on-screen re-alarm. If you want it shown, cut ~8s to the `--mock` demo's Phase 4 (it prints the re-alarm) and back.
